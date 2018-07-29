@@ -25,7 +25,19 @@ TEST(numtoa, Netmask) {
 	TEST_ASSERT_EQUAL_STRING("255.255.255.0", numtoa(input));
 }
 
+TEST(numtoa, RefidStr) {
+	const char *res;
+
+	// Test stratum > 1
+	res = refid_str(42, 8);
+	TEST_ASSERT_EQUAL_STRING("42.0.0.0", res);
+	// Test !(stratum > 1)
+	res = refid_str(42, 0);
+	TEST_ASSERT_EQUAL_STRING(".*.", res);
+}
+
 TEST_GROUP_RUNNER(numtoa) {
 	RUN_TEST_CASE(numtoa, Address);
 	RUN_TEST_CASE(numtoa, Netmask);
+	RUN_TEST_CASE(numtoa, RefidStr);
 }
