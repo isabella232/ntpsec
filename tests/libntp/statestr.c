@@ -27,7 +27,7 @@ TEST(statestr, ResAccessFlags) {
 
 // k_st_flags()
 TEST(statestr, KSTFlags) {
-	TEST_ASSERT_EQUAL_STRING("pll", k_st_flags(STA_PLL));
+	TEST_ASSERT_EQUAL_STRING("ppsfreq", k_st_flags(STA_PPSFREQ));
 }
 
 // statustoa
