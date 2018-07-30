@@ -29,11 +29,11 @@ TEST(numtoa, RefidStr) {
 	const char *res;
 
 	// Test stratum > 1
-	res = refid_str(42, 8);
-	TEST_ASSERT_EQUAL_STRING("42.0.0.0", res);
+	res = refid_str(0x11223344, 8);
+	TEST_ASSERT_EQUAL_STRING("68.51.34.17", res);
 	// Test !(stratum > 1)
-	res = refid_str(42, 0);
-	TEST_ASSERT_EQUAL_STRING(".*.", res);
+	res = refid_str(0x40414243, 0);
+	TEST_ASSERT_EQUAL_STRING(".CBA@.", res);
 }
 
 TEST_GROUP_RUNNER(numtoa) {
