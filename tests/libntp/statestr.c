@@ -4,6 +4,8 @@
 #include "unity.h"
 #include "unity_fixture.h"
 
+#include <sys/time.h>
+
 TEST_GROUP(statestr);
 
 TEST_SETUP(statestr) {}
