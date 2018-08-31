@@ -309,6 +309,9 @@ msyslog(
 	...
 	)
 {
+#ifdef __sysloglike
+	__sysloglike(2, 3);
+#endif
 	char	buf[1024];
 	va_list	ap;
 
