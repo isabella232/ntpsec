@@ -596,7 +596,7 @@ gpsd_shutdown(
 		return;
 
 	if (up->pps_peer == NULL) {
-		/* This has been known to be NULL, causing a segfault on shutdown */
+		/* This is NULL if no related PPS */
 		DPRINT(1, ("%s: pps_peer found NULL", up->logname));
 	} else if (pp != up->pps_peer->procptr) {
 		/* now check if we must close IO resources */
