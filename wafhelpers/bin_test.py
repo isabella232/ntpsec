@@ -25,7 +25,7 @@ cmd_map = {
     ("main/ntpclients/ntpviz", "--version"): "ntpviz %s\n" % verStr,
     ("main/ntpclients/ntpwait", "--version"): "ntpwait %s\n" % verStr,
     ("main/ntpfrob/ntpfrob", "-V"): "ntpfrob %s\n" % verStr,
-    ("main/ntptime/ntptime", "--version"): "ntptime %s\n" % verStr,
+    ("main/ntptime/ntptime", "-V"): "ntptime %s\n" % verStr,
     ("main/attic/sht", "--version"): "sht %s\n" % verStr,
 
     # Perl library
