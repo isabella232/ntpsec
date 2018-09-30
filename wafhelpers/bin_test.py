@@ -54,6 +54,8 @@ def run(cmd, reg):
 
     stdout, stderr = p.communicate()
 
+    #print("\nstdout:", stdout)
+    #print("\nstderr:", stderr)
     if (stdout == reg) or (stderr == reg):
         check = True
 
