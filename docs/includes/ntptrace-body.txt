@@ -57,4 +57,7 @@ the canonical host names.
 +-r+ string, +--host+=_string_::
   Trace a single remote host.
 
++-V+, +--version+::
+  Print the version string and exit.
+
 // end
