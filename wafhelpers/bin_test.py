@@ -1,21 +1,32 @@
 from __future__ import print_function
-import re
+import sys
 from os.path import exists
 from waflib.Utils import subprocess
 from waflib.Logs import pprint
 
+# Need the build form of util.py to get the version string
+sys.path.insert(0, "build/main/pylib/")
+import util
+
+verStr = util.stdversion()
+
 cmd_map = {
-    ("main/ntpd/ntpd", "-invalid"): br'.*must be run as root, not uid.*',
-    ("main/ntpclients/ntpdig", "time.apple.com"): br'.*time.apple.com.*',
-    ("main/ntpfrob/ntpfrob", "-h"): br'usage:',
-    ("main/ntpfrob/ntpfrob", "-b 100000"):
-        br"Bumping clock by 100000 microseconds",
-    ("main/ntpclients/ntpkeygen", None):
-        br'Generating new ',
-    ("main/ntpclients/ntpq", "-p"): br'.*remote.*jitter.*',
-    ("main/ntptime/ntptime", None):
-        br'ntp_gettime\(\) returns code 0 \(OK\)',
-    ("main/attic/sht", "2:r"): br'reader',
+    ("main/ntpd/ntpd", "--version"): "ntpd %s\n" % verStr,
+    ("main/ntpclients/ntpdig", "--version"): "ntpdig %s\n" % verStr,
+    ("main/ntpclients/ntpkeygen", "--version"): "ntpkeygen %s\n" % verStr,
+    ("main/ntpclients/ntpq", "--version"): "ntpq %s\n" % verStr,
+    ("main/ntpclients/ntpmon", "--version"): "ntpmon %s\n" % verStr,
+    ("main/ntpclients/ntpleapfetch", "--version"): "ntpleapfetch %s\n" % verStr,
+    ("main/ntpclients/ntploggps", "--version"): "ntploggps %s\n" % verStr,
+    ("main/ntpclients/ntplogtemp", "--version"): "ntplogtemp %s\n" % verStr,
+    ("main/ntpclients/ntpsnmpd", "--version"): "ntpsnmpd %s\n" % verStr,
+    ("main/ntpclients/ntpsweep", "--version"): "ntpsweep %s\n" % verStr,
+    ("main/ntpclients/ntptrace", "--version"): "ntptrace %s\n" % verStr,
+    ("main/ntpclients/ntpviz", "--version"): "ntpviz %s\n" % verStr,
+    ("main/ntpclients/ntpwait", "--version"): "ntpwait %s\n" % verStr,
+    ("main/ntpfrob/ntpfrob", "--version"): "ntpfrob %s\n" % verStr,
+    ("main/ntptime/ntptime", "--version"): "ntptime %s\n" % verStr,
+    ("main/attic/sht", "--version"): "sht %s\n" % verStr,
 
     # Perl library
     #       ("main/ntpclients/ntptrace", ""): br'',
@@ -43,9 +54,7 @@ def run(cmd, reg):
 
     stdout, stderr = p.communicate()
 
-    regex = re.compile(reg)
-
-    if regex.match(stdout) or regex.match(stderr):
+    if (stdout == reg) or (stderr == reg):
         check = True
 
     if check:
