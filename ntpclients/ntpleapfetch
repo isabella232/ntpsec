@@ -115,12 +115,24 @@ EOF
    return 0
 }
 
+function displayVersion {
+            cat <<EOF
+ntpleapfetch ntpsec-@NTPSEC_VERSION_EXTENDED@
+EOF
+   return 0
+}
+
 # Default: Use syslog for logging if running under cron
 
 SYSLOG="$CRONJOB"
 
 if [ "$1" = "--help" ]; then
     displayHelp
+    exit 0
+fi
+
+if [ "$1" = "--version" ]; then
+    displayVersion
     exit 0
 fi
 
