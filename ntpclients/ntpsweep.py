@@ -11,7 +11,7 @@ USAGE: ntpsweep [-<flag> [<val>] | --<name>[{=| }<val>]]... [hostfile]
     -m, --maxlevel=num         Traverse peers up to this level
                                    (4 is a reasonable number)
     -s, --strip=str            Strip this string from hostnames
-    -V, --version              Out version information and exit
+    -V, --version              Output version information and exit
 
 Options are specified by doubled hyphens and their name or by a single
 hyphen and the flag character.
