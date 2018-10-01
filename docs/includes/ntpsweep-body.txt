@@ -3,7 +3,7 @@
 // tree, and once to make an individual man page.
 
 == Synopsis ==
-+ntpsweep+ [+-l+ 'host']... [-p] [+-m+ 'number'] [+-s+ 'prefix'] [+-h+ 'string'] [hostfile...]
++ntpsweep+ [+-V+ | +--version+] [+-l+ 'host']... [-p] [+-m+ 'number'] [+-s+ 'prefix'] [+-h+ 'string'] [hostfile...]
 
 
 == Description ==

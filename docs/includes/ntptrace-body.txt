@@ -5,7 +5,7 @@
 == SYNOPSIS ==
 
 [verse]
-+ntptrace+ [+-n+ |+--numeric+]
++ntptrace+ [+-V+ | +--version+] [+-n+ |+--numeric+]
     [+-m+ 'number' | +--max-hosts=+'number']
     [+-r+ 'host' | +--host=+'remote']
     'hostname'
