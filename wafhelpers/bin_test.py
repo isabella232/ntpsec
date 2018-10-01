@@ -26,12 +26,6 @@ cmd_map = {
     ("main/ntpclients/ntpwait", "--version"): "ntpwait %s\n" % verStr,
     ("main/ntpfrob/ntpfrob", "-V"): "ntpfrob %s\n" % verStr,
     ("main/ntptime/ntptime", "-V"): "ntptime %s\n" % verStr,
-    #("main/attic/sht", "--version"): "sht %s\n" % verStr,
-
-    # Perl library
-    #       ("main/ntpclients/ntptrace", ""): br'',
-    #       ("main/ntpclients/ntpwait", ""): br'',
-    #       ("main/ntpclients/ntpsweep", ""): br'',
 }
 
 
@@ -54,8 +48,6 @@ def run(cmd, reg):
 
     stdout, stderr = p.communicate()
 
-    #print("\nstdout:", stdout)
-    #print("\nstderr:", stderr)
     if (stdout == reg) or (stderr == reg):
         check = True
 
