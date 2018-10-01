@@ -17,7 +17,6 @@ cmd_map = {
     ("main/ntpclients/ntpq", "--version"): "ntpq %s\n" % verStr,
     ("main/ntpclients/ntpmon", "--version"): "ntpmon %s\n" % verStr,
     ("main/ntpclients/ntpleapfetch", "--version"): "ntpleapfetch %s\n" % verStr,
-    ("main/ntpclients/ntploggps", "--version"): "ntploggps %s\n" % verStr,
     ("main/ntpclients/ntplogtemp", "--version"): "ntplogtemp %s\n" % verStr,
     ("main/ntpclients/ntpsnmpd", "--version"): "ntpsnmpd %s\n" % verStr,
     ("main/ntpclients/ntpsweep", "--version"): "ntpsweep %s\n" % verStr,
