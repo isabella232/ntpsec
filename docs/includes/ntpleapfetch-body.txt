@@ -103,4 +103,7 @@ present and to default leapfile) /etc/{ntpconf}
 +-Z+::
   Use system path only.
 
++-V+, +--version+::
+  Print the version string and exit.
+
 // end

@@ -138,7 +138,7 @@ fi
 
 # Parse options
 
-while getopts 46p:P:s:e:f:Fc:r:i:lLt:hqvz:Z opt; do
+while getopts 46p:P:s:e:f:Fc:r:i:lLt:hqvz:ZV opt; do
     case $opt in
         4)
             PROTO="-4"
@@ -191,6 +191,10 @@ while getopts 46p:P:s:e:f:Fc:r:i:lLt:hqvz:Z opt; do
             displayHelp
             exit 0
             ;;
+		V)
+			displayVersion
+			exit 0
+			;;
 	q)
 	    QUIET="Y"
 	    ;;
