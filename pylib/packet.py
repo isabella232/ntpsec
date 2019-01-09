@@ -1598,17 +1598,18 @@ class Authenticator:
                 return (keyid,) + self.passwords[keyid]
             else:
                 return (keyid, None, None)
-        try:
-            for line in open("/etc/ntp.conf"):
-                if line.startswith("control"):
-                    keyid = int(line.split()[1])
-                    (keytype, passwd) = self.passwords[keyid]
-                    if passwd is None:
-                        raise ValueError
-                    if len(passwd) > 20:
-                        passwd = ntp.util.hexstr2octets(passwd)
-                    return (keyid, keytype, passwd)
-        except IOError:
+        for line in open("/etc/ntp.conf"):
+            if line.startswith("control"):
+                keyid = int(line.split()[1])
+                (keytype, passwd) = self.passwords[keyid]
+                if passwd is None:
+                    # Invalid key ID
+                    raise ValueError
+                if len(passwd) > 20:
+                    passwd = ntp.util.hexstr2octets(passwd)
+                return (keyid, keytype, passwd)
+        else:
+            # No control lines found.
             raise ValueError
 
     @staticmethod
