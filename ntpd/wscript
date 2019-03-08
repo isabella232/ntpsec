@@ -1,5 +1,7 @@
+import waflib.Context
 
 def build(ctx):
+    includes = [waflib.Context.out_dir, "%s/include" % waflib.Context.top_dir]
     srcnode = ctx.srcnode.abspath()
     bldnode = ctx.bldnode.abspath()
 
@@ -7,10 +9,10 @@ def build(ctx):
         bison_source = ["ntp_parser.y"]
 
         ctx(
-            features="c src_include bld_include",
+            features="c",
             includes=["%s/ntpd/" % srcnode,
                       "%s/" % ctx.bldnode.parent.abspath()
-                      ],
+                      ] + includes,
             source=bison_source,
             target="bison_obj",
             use="CRYPTO",
@@ -22,10 +24,10 @@ def build(ctx):
         keyword_gen_source = ["keyword-gen.c", ]
 
         ctx(
-            features="c cprogram bld_include src_include",
+            features="c cprogram",
             includes=["%s/ntpd/" % bldnode,
                       "%s/" % ctx.bldnode.parent.abspath()
-                      ],
+                      ] + includes,
             install_path=None,
             source=keyword_gen_source,
             target="keyword-gen",
@@ -39,10 +41,11 @@ def build(ctx):
         ctx.add_group()
 
         ctx(
-            features="c bld_include src_include",
+            features="c",
             rule="%s/ntpd/keyword-gen ${SRC} > ${TGT}" % bldnode,
             source="ntp_parser.tab.h",
-            target="ntp_keyword.h"
+            target="ntp_keyword.h",
+            include=includes,
         )
 
         # Make sure ntp_keyword.h is created last.
@@ -66,8 +69,8 @@ def build(ctx):
     ]
 
     ctx(
-        features="c bld_include src_include",
-        includes=["%s/libaes_siv/" % srcnode] + ctx.env.PLATFORM_INCLUDES,
+        features="c",
+        includes=["%s/libaes_siv/" % srcnode] + includes,
         source=libntpd_source,
         target="libntpd_obj",
         use="CRYPTO aes_siv",
@@ -89,21 +92,23 @@ def build(ctx):
 
         ctx(
             target="refclock",
-            features="c bld_include src_include",
+            features="c",
             source=refclock_source,
             use="CRYPTO",
+            includes=includes
         )
         use_refclock += "refclock"
 
         for file, define in ctx.env.REFCLOCK_SOURCE:
             ctx(
                 defines=["%s=1" % define],
-                features="c bld_include src_include",
+                features="c",
                 # XXX: These need to go into config.h
                 #      rather than the command line for the individual drivers
                 source="refclock_%s.c" % file,
                 target="refclock_%s" % file,
                 use="CRYPTO",
+                includes=includes,
             )
             use_refclock += " refclock_%s" % file
 
@@ -124,10 +129,10 @@ def build(ctx):
     ]
 
     ctx(
-        features="c rtems_trace cprogram bld_include src_include",
+        features="c rtems_trace cprogram",
         includes=["%s/host/ntpd/" % ctx.bldnode.parent.abspath(),
                   "%s/ntpd/" % srcnode,
-                  ] + ctx.env.PLATFORM_INCLUDES,
+                  ] + includes,
         install_path='${SBINDIR}',
         source=ntpd_source,
         target="ntpd",

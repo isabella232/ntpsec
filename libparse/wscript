@@ -1,3 +1,5 @@
+import waflib.Context
+
 def build(ctx):
     libparse_source = [
         "binio.c",
@@ -24,7 +26,8 @@ def build(ctx):
 
     ctx(
         target="parse",
-        features="c cstlib bld_include src_include",
+        features="c cstlib",
         source=libparse_source,
         use="CRYPTO",
+        includes=[waflib.Context.out_dir, "%s/include" % waflib.Context.top_dir],
     )
