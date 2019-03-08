@@ -74,6 +74,7 @@ def build(ctx):
         source=libntpd_source,
         target="libntpd_obj",
         use="CRYPTO aes_siv",
+        cflags='-Wno-shadow'
     )
 
     ctx(

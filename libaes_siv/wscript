@@ -11,4 +11,5 @@ def build(ctx):
         source="aes_siv.c",
         use="CRYPTO",
         includes=[waflib.Context.out_dir, "%s/include" % waflib.Context.top_dir],
+        cflags='-Wno-shadow'
     )
