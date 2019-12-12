@@ -38,8 +38,8 @@ def build(ctx):
     if not ctx.env.HAVE_STRLCAT or not ctx.env.HAVE_STRLCPY:
         libntp_source_sharable += ["strl_obsd.c"]
 
-    # C library
     ctx(
+        # C library
         features="c cstlib",
         includes=[ctx.bldnode.parent.abspath(), "../include"],
         source=libntp_source + libntp_source_sharable,
@@ -47,12 +47,12 @@ def build(ctx):
         use="SSL CRYPTO",
     )
 
-    # Loadable Python extension
     ctx(
-        features="c cshlib pyext",
-        install_path='${PYTHONARCHDIR}/ntp',
+        # Loadable ffi extension
+        features="c cshlib",
+        install_path='${LIBDIR}',
         includes=[ctx.bldnode.parent.abspath(), "../include"],
-        source=["pymodule.c"] + libntp_source_sharable,
-        target="../pylib/ntpc",  # Put the output in the pylib directory
+        source=["ffimodule.c"] + libntp_source_sharable,
+        target="../ntpd/ntpc",
         use="M RT CRYPTO",
     )

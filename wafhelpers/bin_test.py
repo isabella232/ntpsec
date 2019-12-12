@@ -79,7 +79,7 @@ def run(cmd, reg, pythonic):
         addLog("GREEN", prefix + "  OK")
         return True
     addLog("RED", prefix + "  FAILED")
-    addLog("PINK", "Expected: " + breg)
+    addLog("PINK", "Expected: " + ntp.poly.polystr(breg))
     if stdout:
         addLog("PINK", "Got (stdout): " + ntp.poly.polystr(stdout))
     if stderr:
