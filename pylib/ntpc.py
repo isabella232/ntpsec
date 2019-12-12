@@ -15,26 +15,30 @@ TYPE_CLOCK = 3
 # Add raw interface to libNTP.
 _ntpc = None
 _cwd = os.getcwd()
-if 'ntpsec' in _cwd.split('/'):
+_bits = _cwd.split(os.sep)
+_break = _bits.index('ntpsec')
+if 'ntpsec' in _bits:
     _paths = [
-        'main/ntpd/',
-        'build/main/ntpd/',
-        '../../ntpd/',
+#        'main/ntpd/',
+#        'build/main/ntpd/',
+#        '../../ntpd/',
+        os.sep.join(_bits[:_break] + ['build','main','ntpd','']),
         ]
 else:
     _paths = ['@LIBDIR@/']
 
 _loaded = False
+_ext = '@cshlib_PATTERN@'.split('.')[1]
 for _path in _paths:
     try:
         if not _loaded:
-            _ntpc = ctypes.CDLL('%slibntpc.so' % _path, use_errno=True)
+            _ntpc = ctypes.CDLL('%slibntpc.%s' % (_path, _ext), use_errno=True)
             _loaded = True
             break
     except OSError:
         continue
 if not _loaded:
-    sys.stderr.write('Could not open libntpc.so\nExiting\n')
+    sys.stderr.write('Could not open %slibntpc.%s\nExiting\n' % (_path, _ext))
     exit(1)
 
 
