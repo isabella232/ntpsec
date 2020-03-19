@@ -16,7 +16,7 @@ TYPE_CLOCK = 3
 _ntpc = None
 _cwd = os.getcwd()
 _bits = _cwd.split(os.sep)
-_break = _bits.index('ntpsec')
+_break = _bits.index('ntpsec')+1
 if 'ntpsec' in _bits:
     _paths = [
 #        'main/ntpd/',
