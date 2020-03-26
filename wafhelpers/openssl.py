@@ -1,22 +1,20 @@
-SNIP_OPENSSL_VERSION_CHECK = """
-#include <openssl/opensslv.h>
-
-#if OPENSSL_VERSION_NUMBER <= 0x1010101fL
-#error OpenSSL must be at least 1.1.1b
-#error  1.1.1 needed for TLSv1.3
-#error  1.1.1a has a fatal bug
-#endif
-
-int main(void) {
-    return 0;
-}
-"""
+import ctypes
 
 
 def check_SSL_version(ctx):
-    ctx.check_cc(
-      comment="OpenSSL support",
-      fragment=SNIP_OPENSSL_VERSION_CHECK,
-      includes=ctx.env.PLATFORM_INCLUDES,
-      msg="Checking for OpenSSL > 1.1.1a",
-     )
+    lib = ctypes.CDLL("libcrypto.so")
+    version_int = lib.OpenSSL_version_num()
+    # version = struct.unpack('cccc', version_int)
+    lib.OpenSSL_version.restype = ctypes.c_char_p
+    version_string = '%d.%d.%d%s' % (
+                     (version_int >> 28) & 0xff,
+                     (version_int >> 20) & 0xff,
+                     (version_int >> 12) & 0xff,
+                     (version_int >> 4) & 0xff and chr(
+                      ord('a') - 1 + ((version_int >> 4) & 0xf)) or '')
+    valid = (version_int > 0x1010101f)
+    color = 'GREEN' if valid else 'YELLOW'
+    ctx.msg("Checking for openssl %s > 1.1.1a" %
+            version_string, 'yes' if valid else 'no', color=color)
+    if not valid:
+        ctx.fatal('openssl %s too old' % version_string)
