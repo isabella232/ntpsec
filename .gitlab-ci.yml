@@ -121,6 +121,7 @@ AsciiDoc-py3-Ubuntu:
 debian-oldstable-basic:
   <<: *job_definition
   image: debian:oldstable-slim
+  allow_failure: true
   script:
     - apt-get update
     - apt-get install -y netbase bison gcc libssl-dev libcap-dev pps-tools python3-dev
@@ -130,6 +131,7 @@ debian-oldstable-basic:
 
 debian-oldstable-refclocks:
   <<: *job_definition
+  allow_failure: true
   image: debian:oldstable-slim
   script:
     - apt-get update
