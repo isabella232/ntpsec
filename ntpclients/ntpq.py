@@ -1171,6 +1171,7 @@ usage: lopeers
             self.warn("In Config\nKeyword = :config\nCommand = %s" % line)
         try:
             self.session.config(line)
+            self.session.response = ntp.poly.polystr(self.session.response)
             m = re.match("column ([0-9]+) syntax error", self.session.response)
             if m:
                 col = int(m.group(1))
