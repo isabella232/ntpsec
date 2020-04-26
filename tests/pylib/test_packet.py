@@ -2113,9 +2113,9 @@ class TestAuthenticator(unittest.TestCase):
             fakehashlibmod = jigs.HashlibModuleJig()
             ntpp.hashlib = fakehashlibmod
             # Test good
-            self.assertEqual(cls.verify_mac(ntp.poly.polybytes(good_pkt)), True)
+            self.assertEqual(cls.verify_mac(ntp.poly.polybytes(good_pkt), packet_end=6, mac_begin=6), True)
             # Test bad
-            self.assertEqual(cls.verify_mac(ntp.poly.polybytes(bad_pkt)), False)
+            self.assertEqual(cls.verify_mac(ntp.poly.polybytes(bad_pkt), packet_end=6, mac_begin=6), False)
         finally:
             ntpp.hashlib = temphash
 
