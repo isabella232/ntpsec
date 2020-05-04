@@ -205,7 +205,6 @@ A Mode 6 packet cannot have extension fields.
 # SPDX-License-Identifier: BSD-2-Clause
 from __future__ import print_function, division
 import getpass
-import hashlib
 import hmac
 import os
 import select
@@ -1574,15 +1573,15 @@ def parse_mru_variables(variables):
             "addr": lambda e: e.sortaddr(),
             # IPv6 desc. then IPv4 desc.
             "-addr": lambda e: e.sortaddr(),
-            # hit count ascending 
+            # hit count ascending
             "count": lambda e: -e.ct,
             # hit count descending
             "-count": lambda e: e.ct,
-            # score ascending 
+            # score ascending
             "score": lambda e: -e.sc,
             # score descending
             "-score": lambda e: e.sc,
-            # drop count ascending 
+            # drop count ascending
             "drop": lambda e: -e.dr,
             # drop count descending
             "-drop": lambda e: e.dr,
@@ -1701,13 +1700,15 @@ class Authenticator:
                 self.passwords[int(keyid)] = (keytype, passwd)
 
     def __len__(self):
+        'return the number of keytype/passwd tuples stored'
         return len(self.passwords)
 
     def __getitem__(self, keyid):
+        'get a keytype/passwd tuple by keyid'
         return self.passwords.get(keyid)
 
     def control(self, keyid=None):
-        "Get a keyid/passwd pair that conrtrols localhost"
+        "Get the keytype/passwd tuple that controls localhost and its id"
         if keyid is not None:
             if keyid in self.passwords:
                 return (keyid,) + self.passwords[keyid]
@@ -1723,19 +1724,18 @@ class Authenticator:
                 if len(passwd) > 20:
                     passwd = ntp.util.hexstr2octets(passwd)
                 return (keyid, keytype, passwd)
-        else:
-            # No control lines found
-            raise ValueError
+        # No control lines found
+        raise ValueError
 
     @staticmethod
     def compute_mac(payload, keyid, keytype, passwd):
         'Create the authentication payload to send'
-        hasher = hashlib.new(keytype)
-        hasher.update(ntp.poly.polybytes(passwd))
-        hasher.update(payload)
-        if hasher.digest_size == 0:
-            return None
-        return struct.pack("!I", keyid) + hasher.digest()[:MAX_BARE_MAC_LENGTH]
+        if not ntp.ntpc.checkname(keytype):
+            return False
+        mac2 = ntp.ntpc.mac(ntp.poly.polybytes(payload), ntp.poly.polybytes(passwd), keytype)
+        if not mac2 or len(mac2) == 0:
+            return b''
+        return struct.pack("!I", keyid) + mac2
 
     @staticmethod
     def have_mac(packet):
@@ -1755,9 +1755,11 @@ class Authenticator:
             print('AUTH: No key %08x...' % keyid)
             return False
         (keytype, passwd) = self.passwords[keyid]
-        hasher = hashlib.new(keytype)
-        hasher.update(ntp.poly.polybytes(passwd))
-        hasher.update(payload)
-        return hmac.compare_digest(mac, hasher.digest()[:MAX_BARE_MAC_LENGTH])
+        if not ntp.ntpc.checkname(keytype):
+            return False
+        mac2 = ntp.ntpc.mac(ntp.poly.polybytes(payload), ntp.poly.polybytes(passwd), keytype)
+        if not mac2:
+            return False
+        return hmac.compare_digest(mac, mac2)
 
 # end
