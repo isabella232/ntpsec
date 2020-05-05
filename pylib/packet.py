@@ -1732,7 +1732,8 @@ class Authenticator:
         'Create the authentication payload to send'
         if not ntp.ntpc.checkname(keytype):
             return False
-        mac2 = ntp.ntpc.mac(ntp.poly.polybytes(payload), ntp.poly.polybytes(passwd), keytype)
+        mac2 = ntp.ntpc.mac(ntp.poly.polybytes(payload),
+                            ntp.poly.polybytes(passwd), keytype)
         if not mac2 or len(mac2) == 0:
             return b''
         return struct.pack("!I", keyid) + mac2
@@ -1757,7 +1758,8 @@ class Authenticator:
         (keytype, passwd) = self.passwords[keyid]
         if not ntp.ntpc.checkname(keytype):
             return False
-        mac2 = ntp.ntpc.mac(ntp.poly.polybytes(payload), ntp.poly.polybytes(passwd), keytype)
+        mac2 = ntp.ntpc.mac(ntp.poly.polybytes(payload),
+                            ntp.poly.polybytes(passwd), keytype)
         if not mac2:
             return False
         return hmac.compare_digest(mac, mac2)
