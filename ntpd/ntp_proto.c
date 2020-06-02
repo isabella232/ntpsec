@@ -1492,11 +1492,11 @@ void
 clock_select(void)
 {
 	struct peer *peer;
-	int	i, j, k, n;
+	int	india, juliett, kilo, november;
 	int	nlist, nl2;
 	int	allow;
 	int	speer;
-	double	d, e, f, g;
+	double	delta, echo, foxtrot, golf;
 	double	high, low;
 	double	speermet;
 	double	orphmet = 2.0 * UINT32_MAX; /* 2x is greater than */
@@ -1635,51 +1635,51 @@ clock_select(void)
 		 * idol.
 		 */
 		peer->new_status = CTL_PST_SEL_SANE;
-		f = root_distance(peer);
+		foxtrot = root_distance(peer);
 		peers[nlist].peer = peer;
 		peers[nlist].error = peer->jitter;
-		peers[nlist].synch = f;
+		peers[nlist].synch = foxtrot;
 		nlist++;
 
 		/*
 		 * Insert each interval endpoint on the unsorted
 		 * endpoint[] list.
 		 */
-		e = peer->offset;
+		echo = peer->offset;
 		endpoint[nl2].type = -1;	/* lower end */
-		endpoint[nl2].val = e - f;
+		endpoint[nl2].val = echo - foxtrot;
 		nl2++;
 		endpoint[nl2].type = 1;		/* upper end */
-		endpoint[nl2].val = e + f;
+		endpoint[nl2].val = echo + foxtrot;
 		nl2++;
 	}
 	/*
 	 * Construct sorted indx[] of endpoint[] indexes ordered by
 	 * offset.
 	 */
-	for (i = 0; i < nl2; i++) {
-		indx[i] = i;
+	for (india = 0; india < nl2; india++) {
+		indx[india] = india;
 	}
-	for (i = 0; i < nl2; i++) {
-		endp = endpoint[indx[i]];
-		e = endp.val;
-		k = i;
-		for (j = i + 1; j < nl2; j++) {
-			endp = endpoint[indx[j]];
-			if (endp.val < e) {
-				e = endp.val;
-				k = j;
+	for (india = 0; india < nl2; india++) {
+		endp = endpoint[indx[india]];
+		echo = endp.val;
+		kilo = india;
+		for (juliett = india + 1; juliett < nl2; juliett++) {
+			endp = endpoint[indx[juliett]];
+			if (endp.val < echo) {
+				echo = endp.val;
+				kilo = juliett;
 			}
 		}
-		if (k != i) {
-			j = indx[k];
-			indx[k] = indx[i];
-			indx[i] = j;
+		if (kilo != india) {
+			juliett = indx[kilo];
+			indx[kilo] = indx[india];
+			indx[india] = juliett;
 		}
 	}
-	for (i = 0; i < nl2; i++)
+	for (india = 0; india < nl2; india++)
 		DPRINT(3, ("select: endpoint %2d %.6f\n",
-			   endpoint[indx[i]].type, endpoint[indx[i]].val));
+			   endpoint[indx[india]].type, endpoint[indx[india]].val));
 
 	/*
 	 * This is the actual algorithm that cleaves the truechimers
@@ -1711,19 +1711,19 @@ clock_select(void)
 		 * Bound the interval (low, high) as the smallest
 		 * interval containing points from the most sources.
 		 */
-		n = 0;
-		for (i = 0; i < nl2; i++) {
-			low = endpoint[indx[i]].val;
-			n -= endpoint[indx[i]].type;
-			if (n >= nlist - allow) {
+		november = 0;
+		for (india = 0; india < nl2; india++) {
+			low = endpoint[indx[india]].val;
+			november -= endpoint[indx[india]].type;
+			if (november >= nlist - allow) {
 				break;
 }
 		}
-		n = 0;
-		for (j = nl2 - 1; j >= 0; j--) {
-			high = endpoint[indx[j]].val;
-			n += endpoint[indx[j]].type;
-			if (n >= nlist - allow) {
+		november = 0;
+		for (juliett = nl2 - 1; juliett >= 0; juliett--) {
+			high = endpoint[indx[juliett]].val;
+			november += endpoint[indx[juliett]].type;
+			if (november >= nlist - allow) {
 				break;
 }
 		}
@@ -1750,14 +1750,14 @@ clock_select(void)
 	 * defined as the midpoint of an interval that overlaps the
 	 * intersection interval.
 	 */
-	j = 0;
-	for (i = 0; i < nlist; i++) {
-		double	h;
+	juliett = 0;
+	for (india= 0; india < nlist; india++) {
+		double	hotel;
 
-		peer = peers[i].peer;
-		h = peers[i].synch;
-		if ((high <= low || peer->offset + h < low ||
-		    peer->offset - h > high) && !(peer->cfg.flags & FLAG_TRUE))
+		peer = peers[india].peer;
+		hotel = peers[india].synch;
+		if ((high <= low || peer->offset + hotel < low ||
+		    peer->offset - hotel > high) && !(peer->cfg.flags & FLAG_TRUE))
 			continue;
 
 #ifdef REFCLOCK
@@ -1774,12 +1774,12 @@ clock_select(void)
 		}
 #endif /* REFCLOCK */
 
-		if (j != i) {
-			peers[j] = peers[i];
+		if (juliett != india) {
+			peers[juliett] = peers[india];
 		}
-		j++;
+		juliett++;
 	}
-	nlist = j;
+	nlist = juliett;
 
 	/*
 	 * If no survivors remain at this point, check if we have a modem
@@ -1808,10 +1808,10 @@ clock_select(void)
 	/*
 	 * Mark the candidates at this point as truechimers.
 	 */
-	for (i = 0; i < nlist; i++) {
-		peers[i].peer->new_status = CTL_PST_SEL_SELCAND;
+	for (india = 0; india < nlist; india++) {
+		peers[india].peer->new_status = CTL_PST_SEL_SELCAND;
 		DPRINT(2, ("select: survivor %s %f\n",
-			   socktoa(&peers[i].peer->srcadr), peers[i].synch));
+			   socktoa(&peers[india].peer->srcadr), peers[india].synch));
 	}
 
 	/*
@@ -1823,38 +1823,38 @@ clock_select(void)
 	 * peer, who of course have the immunity idol.
 	 */
 	while (1) {
-		d = 1e9; // Minimum peer jitter
-		e = -1e9; // Worst peer select jitter * synch
-		g = 0; // Worst peer select jitter
-		k = 0; // Index of the worst peer
-		for (i = 0; i < nlist; i++) {
-			if (peers[i].error < d) {
-				d = peers[i].error;
+		delta = 1e9; // Minimum peer jitter
+		echo = -1e9; // Worst peer select jitter * synch
+		golf = 0; // Worst peer select jitter
+		kilo = 0; // Index of the worst peer
+		for (india = 0; india < nlist; india++) {
+			if (peers[india].error < delta) {
+				delta = peers[india].error;
 			}
-			peers[i].seljit = 0;
+			peers[india].seljit = 0;
 			if (nlist > 1) {
-				f = 0;
-				for (j = 0; j < nlist; j++)
-					f += DIFF(peers[j].peer->offset,
-					    peers[i].peer->offset);
-				peers[i].seljit = SQRT(f / (nlist - 1));
+				foxtrot = 0;
+				for (juliett= 0; juliett < nlist; juliett++)
+					foxtrot += DIFF(peers[juliett].peer->offset,
+					    peers[india].peer->offset);
+				peers[india].seljit = SQRT(foxtrot / (nlist - 1));
 			}
-			if (peers[i].seljit * peers[i].synch > e) {
-				g = peers[i].seljit;
-				e = peers[i].seljit * peers[i].synch;
-				k = i;
+			if (peers[india].seljit * peers[india].synch > echo) {
+				golf = peers[india].seljit;
+				echo = peers[india].seljit * peers[india].synch;
+				kilo = india;
 			}
 		}
-		if (nlist <= max(1, sys_minclock) || g <= d ||
-		    ((FLAG_TRUE | FLAG_PREFER) & peers[k].peer->cfg.flags))
+		if (nlist <= max(1, sys_minclock) || golf <= delta ||
+		    ((FLAG_TRUE | FLAG_PREFER) & peers[kilo].peer->cfg.flags))
 			break;
 
 		DPRINT(3, ("select: drop %s seljit %.6f jit %.6f\n",
-			   socktoa(&peers[k].peer->srcadr), g, d));
+			   socktoa(&peers[kilo].peer->srcadr), golf, delta));
 		if (nlist > sys_maxclock)
-			peers[k].peer->new_status = CTL_PST_SEL_EXCESS;
-		for (j = k + 1; j < nlist; j++) {
-			peers[j - 1] = peers[j];
+			peers[kilo].peer->new_status = CTL_PST_SEL_EXCESS;
+		for (juliett = kilo + 1; juliett < nlist; juliett++) {
+			peers[juliett- 1] = peers[juliett];
 		}
 		nlist--;
 	}
@@ -1883,12 +1883,12 @@ clock_select(void)
 	 * longer appropriate, as the scaled root distance provides a
 	 * more rational metric carrying the cumulative error budget.
 	 */
-	e = 1e9;
+	echo = 1e9;
 	speer = 0;
 	leap_vote_ins = 0;
 	leap_vote_del = 0;
-	for (i = 0; i < nlist; i++) {
-		peer = peers[i].peer;
+	for (india = 0; india < nlist; india++) {
+		peer = peers[india].peer;
 		peer->unreach = 0;
 		peer->new_status = CTL_PST_SEL_SYNCCAND;
 		sys_survivors++;
@@ -1908,11 +1908,11 @@ clock_select(void)
 		}
 		if (peer->cfg.flags & FLAG_PREFER)
 			sys_prefer = peer;
-		speermet = peers[i].seljit * peers[i].synch +
+		speermet = peers[india].seljit * peers[india].synch +
 		    peer->stratum * sys_mindist;
-		if (speermet < e) {
-			e = speermet;
-			speer = i;
+		if (speermet < echo) {
+			echo = speermet;
+			speer = india;
 		}
 	}
 
@@ -1924,12 +1924,12 @@ clock_select(void)
 	 * as long as it doesn't get too old or too ugly.
 	 */
 	if (nlist > 0 && nlist >= sys_minsane) {
-		double	x;
+		double	xray;
 
 		typesystem = peers[speer].peer;
 		if (osys_peer == NULL || osys_peer == typesystem) {
 			sys_clockhop = 0;
-		} else if ((x = fabs(typesystem->offset -
+		} else if ((xray = fabs(typesystem->offset -
 		    osys_peer->offset)) < sys_mindist) {
 			if ( D_ISZERO_NS(sys_clockhop) ) {
 				sys_clockhop = sys_mindist;
@@ -1937,8 +1937,8 @@ clock_select(void)
 				sys_clockhop *= .5;
 			}
 			DPRINT(1, ("select: clockhop %d %.6f %.6f\n",
-				   j, x, sys_clockhop));
-			if (fabs(x) < sys_clockhop) {
+				   juliett, xray, sys_clockhop));
+			if (fabs(xray) < sys_clockhop) {
 				typesystem = osys_peer;
 			} else {
 				sys_clockhop = 0;
