@@ -123,7 +123,7 @@ static const struct ctl_proc control_codes[] = {
 
 /*
  * System variable values. The array can be indexed by the variable
- * index to find the textual name.  Mostly not order-sensitive.
+ * index to find the textual name.  order-sensitive.
  */
 static const struct ctl_var sys_var[] = {
 	{ 0,			PADDING, "" },
@@ -395,7 +395,7 @@ static const struct ctl_var sys_var[] = {
 static struct ctl_var *ext_sys_var = NULL;
 
 /*
- * Peer variable list. Not order-sensitive.
+ * Peer variable list. order-sensitive.
  */
 static const struct ctl_var peer_var[] = {
 	{ 0,		PADDING, "" },
@@ -506,7 +506,7 @@ static const struct ctl_var peer_var[] = {
 
 #ifdef REFCLOCK
 /*
- * Clock variable list. Not order-sensitive.
+ * Clock variable list. order-sensitive.
  */
 static const struct ctl_var clock_var[] = {
 	{ 0,			PADDING, "" },
