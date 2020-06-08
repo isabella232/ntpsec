@@ -169,12 +169,12 @@ chain querying peer-stats.
 
 [source, json]
 ----
-{
++2{
    "id" : 1,
    "params" : {},
    "method" : "readstat"
 }
-{
++3{
    "id" : 1,
    "result" : {
       "answer" : {
@@ -195,14 +195,14 @@ chain querying peer-stats.
    }
 }
 
-{
++2{
    "id" : 2,
    "params" : {
       "association" : 62398
    },
    "method" : "readvar"
 }
-{
++3{
    "id" : 2,
    "result" : {
       "answer" : {
