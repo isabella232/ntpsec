@@ -221,6 +221,35 @@ include::../includes/clock-options.adoc[]
 
 include::../includes/misc-options.adoc[]
 
+== Default Configuration
+
+The following is an approximation of the default configuration of the ntp daemon if no config file is passed.
+
+----
+rlimit stacksize 50
+tinker allan 11 dispersion 0.000015 panic 1000 step 0.128 stepout 900
+nonvolatile 0.000001
+mru maxmem 1024 mindepth 600 initmem 4 incmem 4
+logconfig =clock =peer =sys =sync
+disable calibrate stats
+enable auth monitor ntp
+tos ceiling 15 floor 1 minclock 3 minsane 1
+limit average 1.0 burst 20.0 kod 0.5
+restrict ::/0   noquery limited
+nts disable
+mdnstries 5
+----
+
+The following represents optional configuration based on a possible runtime detection.
+
+----
+restrict 127.0.0.1/32   ntpport interface ignore
+restrict ::1/128   ntpport interface ignore
+restrict fe80::b4b3:c7c6:bfe9:e2c6/128   ntpport interface ignore
+enable kernel
+----
+
+
 == FILES
 
 `/etc/ntp.conf`::
