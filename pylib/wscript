@@ -38,13 +38,12 @@ def build(ctx):
     
     bldnode.mkdir()
 
-    ctx.add_group()
-
-    target3 = bldnode.ant_glob('*ntpc*')
-    for _ in target3:
-        ctx.exec_command("rm -f %s" % _.abspath())
-
-    ctx.add_group()
+    if ctx.cmd not in ('install'):
+        ctx.add_group()
+        target3 = bldnode.ant_glob('*ntpc*')
+        for _ in target3:
+            ctx.exec_command("rm -f %s" % _.abspath())
+        ctx.add_group()
 
     sources = []
     if ctx.env['ntpc'] == 'ext':
