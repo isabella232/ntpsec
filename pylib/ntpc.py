@@ -13,7 +13,8 @@ LIB = 'ntpc'
 
 
 def importado():
-    """Load the ntpc library or throw an OSError trying.
+    """
+    Load the ntpc library or throw an OSError trying.
 
     Use find_library() which looks in: LD_LIBRARY_PATH,
     DYLD_LIBRARY_PATH, $home/lib, /.usr/local/lib,
@@ -42,14 +43,14 @@ def importado():
 
 
 _ntpc = importado()
-progname   = ctypes.c_char_p.in_dll(_ntpc, 'progname')
-# log_sys    = ctypes.c_bool.in_dll(_ntpc, 'syslogit')
-# log_term   = ctypes.c_bool.in_dll(_ntpc, 'termlogit')
-# log_pid    = ctypes.c_bool.in_dll(_ntpc, 'termlogit_pid')
-# log_time   = ctypes.c_bool.in_dll(_ntpc, 'msyslog_include_timestamp')
+progname = ctypes.c_char_p.in_dll(_ntpc, 'progname')
+# log_sys = ctypes.c_bool.in_dll(_ntpc, 'syslogit')
+# log_term = ctypes.c_bool.in_dll(_ntpc, 'termlogit')
+# log_pid = ctypes.c_bool.in_dll(_ntpc, 'termlogit_pid')
+# log_time = ctypes.c_bool.in_dll(_ntpc, 'msyslog_include_timestamp')
 
-TYPE_SYS   = ctypes.c_int.in_dll(_ntpc, 'SYS_TYPE').value
-TYPE_PEER  = ctypes.c_int.in_dll(_ntpc, 'PEER_TYPE').value
+TYPE_SYS = ctypes.c_int.in_dll(_ntpc, 'SYS_TYPE').value
+TYPE_PEER = ctypes.c_int.in_dll(_ntpc, 'PEER_TYPE').value
 TYPE_CLOCK = ctypes.c_int.in_dll(_ntpc, 'CLOCK_TYPE').value
 
 
@@ -108,7 +109,8 @@ def lfptofloat(in_string):
 
 
 def msyslog(level, in_string):
-    """Log send a message to terminal or output.
+    """
+    Log send a message to terminal or output.
 
     Can actually log to syslog, a file or stdout/arderr.
     Minimum of of features supported.
