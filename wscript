@@ -120,6 +120,8 @@ def configure(ctx):
             opt = flag.replace("--", "").upper()
             opt_map[opt] = ctx.env.OPT_STORE[flag]
 
+    ctx.env['ntpc']      = 'ffi'
+
     msg("--- Configuring host ---")
     ctx.setenv('host', ctx.env.derive())
 
@@ -1023,6 +1025,7 @@ def build(ctx):
         ctx.recurse("ntpd")
         return
 
+    ctx.recurse("pylib")
     if ctx.env.REFCLOCK_GENERIC or ctx.env.REFCLOCK_TRIMBLE:
         # required by the generic and Trimble refclocks
         ctx.recurse("libparse")
@@ -1031,7 +1034,6 @@ def build(ctx):
     ctx.recurse("ntpd")
     ctx.recurse("ntpfrob")
     ctx.recurse("ntptime")
-    ctx.recurse("pylib")
     ctx.recurse("attic")
     ctx.recurse("etc")
     ctx.recurse("tests")
