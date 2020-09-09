@@ -120,7 +120,8 @@ def configure(ctx):
             opt = flag.replace("--", "").upper()
             opt_map[opt] = ctx.env.OPT_STORE[flag]
 
-    ctx.env['ntpc']      = 'ffi'
+    ctx.env['ntpc'] = 'ffi'
+    ctx.env['ntpcver'] = '1.1.0'
 
     msg("--- Configuring host ---")
     ctx.setenv('host', ctx.env.derive())
