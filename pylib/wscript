@@ -35,15 +35,6 @@ def build(ctx):
     bldnode = ctx.bldnode.make_node('pylib')
     target1 = bldnode.make_node('control.py')
     target2 = bldnode.make_node('magic.py')
-    
-    bldnode.mkdir()
-
-    if ctx.cmd not in ('install'):
-        ctx.add_group()
-        target3 = bldnode.ant_glob('*ntpc*')
-        for _ in target3:
-            ctx.exec_command("rm -f %s" % _.abspath())
-        ctx.add_group()
 
     sources = []
     if ctx.env['ntpc'] == 'ext':
@@ -51,6 +42,7 @@ def build(ctx):
     elif ctx.env['ntpc'] == 'ffi':
         sources = srcnode.ant_glob('*.py')
     builds = [x.get_bld() for x in sources]
+    print(repr(sources))
 
     # The rm's here were added to fix a reported (but underdocumented) problem
     # where the results of pythonize-header were not updated when needed,

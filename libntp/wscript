@@ -60,15 +60,13 @@ def build(ctx):
             use="M RT CRYPTO",
             vnum=ctx.env['ntpcver'],
         )
-        return
-    elif ctx.env['ntpc'] != 'ext':
-        return
-    # Loadable Python extension
-    ctx(
-        features="c cshlib pyext",
-        install_path='${PYTHONARCHDIR}/ntp',
-        includes=[ctx.bldnode.parent.abspath(), "../include"],
-        source=["pymodule.c", "pymodule-mac.c"] + libntp_source_sharable,
-        target="../pylib/ntpc",  # Put the output in the pylib directory
-        use="M RT CRYPTO",
-    )
+    elif ctx.env['ntpc'] == 'ext':
+        # Loadable Python extension
+        ctx(
+            features="c cshlib pyext",
+            install_path='${PYTHONARCHDIR}/ntp',
+            includes=[ctx.bldnode.parent.abspath(), "../include"],
+            source=["pymodule.c", "pymodule-mac.c"] + libntp_source_sharable,
+            target="../pylib/ntpc",  # Put the output in the pylib directory
+            use="M RT CRYPTO",
+        )
