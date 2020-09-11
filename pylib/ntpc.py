@@ -7,40 +7,49 @@ import ctypes.util
 import errno
 import os
 import os.path
+import sys
 import ntp.poly
 
 LIB = 'ntpc'
 
 
-def importado():
-    """Load the ntpc library or throw an OSError trying.
-    Use find_library() which looks in: LD_LIBRARY_PATH,
-    DYLD_LIBRARY_PATH, $home/lib, /.usr/local/lib,
-    /usr/lib, /lib Returns the library handle.
-    """
+def _fmt():
+    """Produce library naming scheme."""
+    if sys.platform.startswith('darwin'):
+        return 'lib%s.dylib'
+    if sys.platform.startswith('win32'):
+        return '%s.dll'
+    if sys.platform.startswith('cygwin'):
+        return 'lib%s.dll'
+    return 'lib%s.so'
+
+
+def _importado():
+    """Load the ntpc library or throw an OSError trying."""
     ntpc_paths = []         # places to look
 
     j = __file__.split(os.sep)[:-1]
-    for i in ['lib%s.so', 'lib%s.dylib', '%s.dll']:
-        _ = os.sep.join(j + [i % LIB])
-        # print(_)
-        ntpc_paths.append(_)
+    ntpc_paths.append(os.sep.join(j + [_fmt() % LIB]))
 
     ntpc_path = ctypes.util.find_library(LIB)
     if ntpc_path:
         ntpc_paths.append(ntpc_path)
 
-    for ntpc_path in ntpc_paths:
+    return _dlo(ntpc_paths)
+
+
+def _dlo(paths):
+    """Try opening library from a list."""
+    for ntpc_path in paths:
         try:
             lib = ctypes.CDLL(ntpc_path, use_errno=True)
             return lib
         except OSError:
             pass
-
     raise OSError("Can't find %s library" % LIB)
 
 
-_ntpc = importado()
+_ntpc = _importado()
 progname = ctypes.c_char_p.in_dll(_ntpc, 'progname')
 # log_sys = ctypes.c_bool.in_dll(_ntpc, 'syslogit')
 # log_term = ctypes.c_bool.in_dll(_ntpc, 'termlogit')
@@ -107,10 +116,7 @@ def lfptofloat(in_string):
 
 
 def msyslog(level, in_string):
-    """Log send a message to terminal or output.
-    Can actually log to syslog, a file or stdout/arderr.
-    Minimum of of features supported.
-    """
+    """Log send a message to terminal or output."""
     mid_bytes = ntp.poly.polybytes(in_string)
     _msyslog(level, mid_bytes)
 
