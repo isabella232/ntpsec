@@ -13,9 +13,7 @@ LIB = 'ntpc'
 
 
 def importado():
-    """
-    Load the ntpc library or throw an OSError trying.
-
+    """Load the ntpc library or throw an OSError trying.
     Use find_library() which looks in: LD_LIBRARY_PATH,
     DYLD_LIBRARY_PATH, $home/lib, /.usr/local/lib,
     /usr/lib, /lib Returns the library handle.
@@ -109,9 +107,7 @@ def lfptofloat(in_string):
 
 
 def msyslog(level, in_string):
-    """
-    Log send a message to terminal or output.
-
+    """Log send a message to terminal or output.
     Can actually log to syslog, a file or stdout/arderr.
     Minimum of of features supported.
     """
