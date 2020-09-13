@@ -42,7 +42,6 @@ def build(ctx):
     elif ctx.env['ntpc'] == 'ffi':
         sources = srcnode.ant_glob('*.py')
     builds = [x.get_bld() for x in sources]
-    print(repr(sources))
 
     # The rm's here were added to fix a reported (but underdocumented) problem
     # where the results of pythonize-header were not updated when needed,

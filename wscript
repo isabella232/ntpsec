@@ -120,7 +120,7 @@ def configure(ctx):
             opt = flag.replace("--", "").upper()
             opt_map[opt] = ctx.env.OPT_STORE[flag]
 
-    ctx.env['ntpc'] = 'ffi'
+    ctx.env['ntpc'] = ctx.options.enable_pylib
     ctx.env['ntpcver'] = '1.1.0'
 
     msg("--- Configuring host ---")
@@ -1031,7 +1031,7 @@ def build(ctx):
         bldnode.mkdir()
         target3 = bldnode.ant_glob('*ntpc*')
         for _ in target3:
-            ctx.exec_command("rm -vf %s" % _.abspath())
+            ctx.exec_command("rm -f %s" % _.abspath())
         # Finish purging ntp.ntpc 
         ctx.add_group()
 
