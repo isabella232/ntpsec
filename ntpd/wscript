@@ -115,6 +115,7 @@ def build(ctx):
         "ntp_sandbox.c",
         "ntp_scanner.c",
         "ntp_signd.c",
+        "ntp_stats.c",
         "ntp_timer.c",
         "ntp_dns.c",
         "ntpd.c",

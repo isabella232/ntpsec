@@ -173,23 +173,6 @@ extern	void	set_sys_tick_precision(double);
 extern	void	proto_config	(int, unsigned long, double);
 extern	void	proto_clr_stats (void);
 
-extern uptime_t stat_stattime(void);
-extern uint64_t stat_received(void);
-extern uint64_t stat_processed(void);
-extern uint64_t stat_restricted(void);
-extern void increment_restricted(void);
-extern uint64_t stat_newversion(void);
-extern uint64_t stat_oldversion(void);
-extern uint64_t stat_badlength(void);
-extern uint64_t stat_badauth(void);
-extern uint64_t stat_declined(void);
-extern uint64_t stat_limitrejected(void);
-extern uint64_t stat_kodsent(void);
-extern uptime_t stat_use_stattime(void);
-extern void set_use_stattime(uptime_t stattime);
-
-
-
 /* ntp_restrict.c */
 extern	void	init_restrict	(void);
 extern	unsigned short	restrictions	(sockaddr_u *);

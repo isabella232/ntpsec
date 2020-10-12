@@ -9,7 +9,7 @@
 #include "ntp_config.h"
 #include "ntp_filegen.h"
 #include "ntp_leapsec.h"
-#include "ntp_stdlib.h"
+#include "ntp_stats.h"
 #include "ntp_stdlib.h"
 #include "ntp_auth.h"
 #include "ntpd.h"
