@@ -218,7 +218,7 @@ if __name__ == '__main__':
                         # just once
                         break
 
-            except AttributeError as e:
+            except AttributeError:
                 print('parse error\n')
 
             # wait a bit before next log

@@ -1295,7 +1295,7 @@ def local_offset_multiplot(statlist):
     plot = NTPViz.Common + '''\
 set terminal %(terminal)s size %(size)s
 set title "Multiplot Local Clock Offsets"
-set ytics format "%1.2f μs" nomirror textcolor rgb "#0060ad"
+set ytics format "%%1.2f μs" nomirror textcolor rgb "#0060ad"
 set key bottom right box
 plot \\
 ''' % out

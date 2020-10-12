@@ -392,7 +392,7 @@ if __name__ == '__main__':
                                 strconvert = ntp.util.cook(clockvars,
                                                            showunits, " ")
                                 stdscr.addstr(strconvert.encode('UTF-8'))
-                            except ntp.packet.ControlException as e:
+                            except ntp.packet.ControlException:
                                 pass
                         elif span.entries:
                             strconvert = ntp.util.MRUSummary.header + "\n"
