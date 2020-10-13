@@ -29,32 +29,29 @@ except ImportError as e:
 
 
 def get_info(host):
-    info = ntp_read_vars(0, [], host)
-    if info is None or 'stratum' not in info:
-        return
+    info3 = ntp_read_vars(0, [], host)
+    if info3 is None or 'stratum' not in info3:
+        return Nonw
 
-    info['offset'] = round(float(info['offset']) / 1000, 6)
-    info['syncdistance'] = \
-        (float(info['rootdisp']) + (float(info['rootdelay']) / 2)) / 1000
+    info3['offset'] = round(float(info3['offset']) / 1000, 6)
+    info3['syncdistance'] = \
+        (float(info3['rootdisp']) + (float(info3['rootdelay']) / 2)) / 1000
 
-    return info
+    return info3
 
 
 def get_next_host(peer, host):
-    info = ntp_read_vars(peer, ["srcadr"], host)
-    if info is None:
-        return
-    return info['srcadr']
+    info2 = ntp_read_vars(peer, ["srcadr"], host)
+    if info2 is None:
+        return None
+    return info2['srcadr']
 
 
 def ntp_read_vars(peer, vars, host):
     obsolete = {'phase': 'offset',
                 'rootdispersion': 'rootdisp'}
 
-    if not vars:
-        do_all = True
-    else:
-        do_all = False
+    do_all = bool(not vars)
     outvars = {}.fromkeys(vars)
 
     if do_all:
@@ -95,8 +92,7 @@ def ntp_read_vars(peer, vars, host):
             key = match.group(1)
             val = match.group(2)
             val = re.sub(r'^"([^"]+)"$', r'\1', val)
-            if key in obsolete:
-                key = obsolete[key]
+            key = dict.get(obsolete, key, key)
             if do_all or key in outvars:
                 outvars[key] = val
 
@@ -134,18 +130,18 @@ numeric = False
 maxhosts = 99
 host = '127.0.0.1'
 
-for (switch, val) in options:
-    if switch == "-m" or switch == "--max-hosts":
+for (switch, value) in options:
+    if switch in ("-m", "--max-hosts"):
         errmsg = "Error: -m parameter '%s' not a number\n"
-        maxhosts = ntp.util.safeargcast(val, int, errmsg, usage)
-    elif switch == "-n" or switch == "--numeric":
+        maxhosts = ntp.util.safeargcast(value, int, errmsg, usage)
+    elif switch in ("-n", "--numeric"):
         numeric = True
-    elif switch == "-r" or switch == "--host":
-        host = val
-    elif switch == "-?" or switch == "--help" or switch == "--more-help":
+    elif switch in ("-r", "--host"):
+        host = value
+    elif switch in ("-?", "--help", "--more-help"):
         print(usage, file=sys.stderr)
         raise SystemExit(0)
-    elif switch == "-V" or switch == "--version":
+    elif switch in ("-V", "--version"):
         print("ntptrace %s" % ntp.util.stdversion())
         raise SystemExit(0)
 

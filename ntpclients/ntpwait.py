@@ -24,8 +24,8 @@ signal.signal(signal.SIGINT, lambda signal, frame: sys.exit(2))
 
 import getopt
 import re
-import time
 import socket
+import time
 
 try:
     import ntp.magic

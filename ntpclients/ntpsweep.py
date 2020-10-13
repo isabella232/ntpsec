@@ -40,12 +40,12 @@ except ImportError as e:
     sys.exit(1)
 
 
-def ntp_peers(host):
+def ntp_peers(server):
     """Return: a list of peer IP addrs for a specified host,
             empty list if query failed.
     """
     try:
-        with os.popen("ntpq -npw " + host) as rp:
+        with os.popen("ntpq -npw " + server) as rp:
             hostlines = rp.readlines()[2:]      # Drop display header
             # Strip tally mark from first field
             return [ln.split()[0][1:] for
@@ -118,7 +118,7 @@ def scan_host(host, level):
             printhost = printhost.replace(strip, "")
         # append number of peers in brackets if requested and valid
         if (recurse and (known_host_info[host] != " ?") and
-           (host in known_host_peers)):
+                (host in known_host_peers)):
             printhost += " (%d)" % len(known_host_peers[host])
         # Finally print complete host line
         print("%-32s %s" % (printhost[:32], known_host_info[host]))
@@ -139,7 +139,7 @@ def scan_host(host, level):
                     # Might cause problems in the future.  First
                     # part of the guard is an attempt to skip
                     # NTPsec-style clock IDs.
-                    if peer[0].isdigit() and not peer.startswith("127"):
+                    if peer[0].isdigit() and not peer.startswith("127.127."):
                         scan_host(peer, level + 1)
     else:   # We did not get answers from this host
         printhost = (' ' * level) + (ntp.util.canonicalize_dns(host) or host)
@@ -166,21 +166,21 @@ if __name__ == '__main__':
     recurse = False
     strip = ""
     for (switch, val) in options:
-        if switch == "-h" or switch == "--host":
+        if switch in ("-h", "--host"):
             hostlist = [val]
-        elif switch == "-l" or switch == "--host-list":
+        elif switch in ("-l", "--host-list"):
             hostlist = val.split(",")
-        elif switch == "-m" or switch == "--maxlevel":
+        elif switch in ("-m", "--maxlevel"):
             errmsg = "Error: -m parameter '%s' not a number\n"
             maxlevel = ntp.util.safeargcast(val, int, errmsg, __doc__)
-        elif switch == "-p" or switch == "--peers":
+        elif switch in ("-p", "--peers"):
             recurse = True
-        elif switch == "-s" or switch == "--strip":
+        elif switch in ("-s", "--strip"):
             strip = val
-        elif switch == "-?" or switch == "--help":
+        elif switch in ("-?", "--help"):
             print(__doc__, file=sys.stderr)
             raise SystemExit(0)
-        elif switch == "-V" or switch == "--version":
+        elif switch in ("-V", "--version"):
             print("ntpsweep %s" % ntp.util.stdversion())
             raise SystemExit(0)
 
