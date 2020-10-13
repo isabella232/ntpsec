@@ -289,7 +289,7 @@ if __name__ == '__main__':
         progname = sys.argv[0]
 
         logfp = sys.stderr
-        log = lambda m: logfp.write("ntpdig: %s\n" % m)
+        def log(m): return logfp.write("ntpdig: %s\n" % m)
 
         af = socket.AF_UNSPEC
         authkey = None

@@ -29,6 +29,7 @@ import stat
 
 try:
     import secrets
+
     def gen_key(bytes, asciified=True):
         if asciified:
             result = ''
@@ -39,6 +40,7 @@ try:
             return secrets.token_hex(bytes)
 except ImportError:
     import random
+
     def gen_key(bytes, asciified=True):
         result = ''
         if asciified:

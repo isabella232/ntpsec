@@ -71,7 +71,7 @@ if sys.version_info[0] == 2:
     def open(file, mode='r', buffering=-1, encoding=None, errors=None):
         """Redefine open()"""
         return(codecs.open(filename=file, mode=mode, encoding=encoding,
-               errors=errors, buffering=buffering))
+                           errors=errors, buffering=buffering))
 
 # believe it or not, Python has no way to make a simple constant!
 MS_PER_S = 1e3          # milliseconds per second
@@ -1546,7 +1546,7 @@ Python by ESR, concept and gnuplot code by Dan Drown.
                 'pngcairo': '.png',
                 'png': '.png',
                 'svg': '.svg',
-               }
+                }
     if args.terminal in term_map:
         args.img_ext = term_map[args.terminal]
     else:
@@ -1987,7 +1987,7 @@ ntpviz</a>, part of the <a href="https://www.ntpsec.org/">NTPsec project</a>
                 index_buffer += "<div>\n%s</div>\n" % image['html']
             index_buffer += "<br><br>\n"
             gnuplot(image['plot'], os.path.join(args.outdir,
-                    imagename + args.img_ext))
+                                                imagename + args.img_ext))
             index_buffer += "</div>\n"
 
     # dump stats
