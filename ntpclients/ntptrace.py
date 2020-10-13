@@ -31,7 +31,7 @@ except ImportError as e:
 def get_info(host):
     info3 = ntp_read_vars(0, [], host)
     if info3 is None or 'stratum' not in info3:
-        return Nonw
+        return None
 
     info3['offset'] = round(float(info3['offset']) / 1000, 6)
     info3['syncdistance'] = \
