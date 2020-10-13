@@ -78,7 +78,7 @@ def read_append(s, packets, packet, sockaddr):
 
 
 def queryhost(server, concurrent, timeout=5, port=123):
-    "Query IP addresses associated with a specified host."
+    """Query IP addresses associated with a specified host."""
     try:
         iptuples = socket.getaddrinfo(server, port,
                                       af, socket.SOCK_DGRAM,
@@ -138,7 +138,7 @@ def queryhost(server, concurrent, timeout=5, port=123):
 
 
 def clock_select(packets):
-    "Select the pick-of-the-litter clock from the samples we've got."
+    """Select the pick-of-the-litter clock from the samples we've got."""
     # This is a slightly simplified version of the filter ntpdate used
     NTP_INFIN = 15          # max stratum, infinity a la Bellman-Ford
 
@@ -192,7 +192,7 @@ def clock_select(packets):
 
 
 def report(packet, json):
-    "Report on the SNTP packet selected for display, and its adjustment."
+    """Report on the SNTP packet selected for display, and its adjustment."""
     say = sys.stdout.write
 
     packet.posixize()

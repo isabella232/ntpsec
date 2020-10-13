@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # SPDX-License-Identifier: BSD-2-Clause
-'''\
-Any keystroke causes a poll and update. Keystroke commands:
+"""\ Any keystroke causes a poll and update. Keystroke commands:
 
 'a': Change peer display to apeers mode, showing association IDs.
 'd': Toggle detail mode (some peer will be reverse-video highlighted when on).
@@ -23,7 +22,7 @@ Any keystroke causes a poll and update. Keystroke commands:
 '+': Increase debugging level.  Output goes to ntpmon.log
 '-': Decrease debugging level.
 '?': Display helpscreen.
-'''
+"""
 
 from __future__ import print_function, division
 
@@ -71,12 +70,12 @@ stdscr = None
 
 
 def iso8601(t):
-    "ISO8601 string from Unix time."
+    """ISO8601 string from Unix time."""
     return time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime(t))
 
 
 def statline(_peerlist, _mrulist, nyquist):
-    "Generate a status line"
+    """Generate a status line."""
     # We don't use stdversion here because the presence of a date is confusing
     leader = sysvars['version'][0]
     leader = re.sub(r" \([^\)]*\)", "", leader)
@@ -91,7 +90,7 @@ def statline(_peerlist, _mrulist, nyquist):
 
 
 def peer_detail(variables, showunits=False):
-    "Show the things a peer summary doesn't, cooked slightly differently"
+    """Show the things a peer summary doesn't, cooked slightly differently."""
     # All of an rv display except refid, reach, delay, offset, jitter.
     # One of the goals here is to emit field values at fixed positions
     # on the 2D display, so that changes in the details are easier to spot.
@@ -160,7 +159,7 @@ filtdisp   = %(filtdisp)s
 
 
 class Fatal(Exception):
-    "Unrecoverable error."
+    """Unrecoverable error."""
 
     def __init__(self, msg):
         Exception.__init__(self)
@@ -172,7 +171,7 @@ class Fatal(Exception):
 
 class OutputContext:
     def __enter__(self):
-        "Begin critical region."
+        """Begin critical region."""
         if sys.version_info[0] < 3 and not disableunicode:
             # This appears to only be needed under python 2, it is only
             # activated when we already have UTF-8. Otherwise we drop

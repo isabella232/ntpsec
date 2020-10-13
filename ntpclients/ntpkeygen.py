@@ -57,7 +57,7 @@ KEYSIZE = 16    # maximum key size
 
 
 def gen_keys(ident, groupname):
-    "Generate semi-random AES keys for versions of ntpd with CMAC support."
+    """Generate semi-random AES keys for versions of ntpd with CMAC support."""
     with fheader("AES", ident, groupname) as wp:
         for i in range(1, NUMKEYS+1):
             key = gen_key(KEYSIZE, True)
@@ -74,7 +74,7 @@ def fheader(fileid,     # file name id
             ulink,      # linkname
             owner       # owner name
             ):
-    "Generate file header and link"
+    """Generate file header and link."""
     try:
         filename = "ntpkey_%s_%s.%u" % (fileid, owner, int(time.time()))
         orig_umask = os.umask(stat.S_IWGRP | stat.S_IRWXO)

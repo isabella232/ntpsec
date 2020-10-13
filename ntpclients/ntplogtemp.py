@@ -33,9 +33,9 @@ import time
 
 
 class logfile_header_class(logging.handlers.TimedRotatingFileHandler):
-    'A class to modify the file logging handler.'
+    """A class to modify the file logging handler."""
     def doRollover(self):
-        'function to add header to new file on rotation.'
+        """function to add header to new file on rotation."""
         if str is bytes:
             super(logfile_header_class, self).doRollover()
         else:
@@ -44,10 +44,7 @@ class logfile_header_class(logging.handlers.TimedRotatingFileHandler):
 
 
 def run_binary(cmd):
-    """\
-Run a binary
-Return output if good, None if bad
-"""
+    """\ Run a binary Return output if good, None if bad."""
 
     try:
         # sadly subprocess.check_output() is not in Python 2.6
@@ -72,7 +69,7 @@ Return output if good, None if bad
 
 
 class CpuTemp:
-    "Sensors on the CPU Core"
+    """Sensors on the CPU Core."""
     has_sensors = False
 
     def __init__(self):
@@ -85,7 +82,7 @@ class CpuTemp:
         self._pattern = re.compile('^\s+temp\d+_input:\s+([\d\.]+).*$')
 
     def get_data(self):
-        "Collects the data and return the output as an array"
+        """Collects the data and return the output as an array."""
         if not self.has_sensors:
             return None
 
@@ -113,7 +110,7 @@ class CpuTemp:
 
 
 class SmartCtl:
-    "Sensor on the Hard Drive"
+    """Sensor on the Hard Drive."""
     _drives = []
     has_smartctl = False
 
@@ -129,7 +126,7 @@ class SmartCtl:
             self._drives = sorted(self._drives)
 
     def get_data(self):
-        "Collects the data and return the output as an array"
+        """Collects the data and return the output as an array."""
         if not self.has_smartctl:
             return None
 
@@ -150,13 +147,12 @@ class SmartCtl:
 
 
 class Temper:
-    """\
-    Reads 'temper-poll -c' for room temperature data.
+    """\ Reads 'temper-poll -c' for room temperature data.
 
     Before you can use this class you must have a TEMPer USB thermometer
-    plugged in, and the temper-python package must be installed and configured.
-    See their documentation for that procedure.
-"""
+    plugged in, and the temper-python package must be installed and
+    configured. See their documentation for that procedure.
+    """
     has_temper = False
 
     def __init__(self):
@@ -166,7 +162,7 @@ class Temper:
             self.has_temper = True
 
     def get_data(self):
-        "Collects the data and return the output as an array"
+        """Collects the data and return the output as an array."""
         if not self.has_temper:
             return None
 
@@ -194,7 +190,7 @@ class Temper:
 
 
 class ZoneTemp:
-    "Zone sensors"
+    """Zone sensors."""
 
     def __init__(self):
         base_dir = '/sys/class/thermal/thermal_zone?/'
@@ -203,7 +199,7 @@ class ZoneTemp:
             self.zones.append(child)
 
     def get_data(self):
-        "Collects the data and return the output as an array"
+        """Collects the data and return the output as an array."""
         _zone = 0
         _data = []
         for zone in self.zones:
@@ -249,7 +245,7 @@ args = parser.parse_args()
 
 
 def logging_setup():
-    "Create logging object"
+    """Create logging object."""
     logFormat = logging.Formatter('%(message)s')
     # Create logger for cpuTemp
     tempLogger = logging.getLogger()
@@ -275,14 +271,14 @@ def logging_setup():
 
 
 def logData(log, data):
-    "log the data"
+    """log the data."""
     if data is not None:
         for _item in data:
             log.info(_item)
 
 
 def log_data():
-    "Write all temperature readings to one file"
+    """Write all temperature readings to one file."""
     # Create objects
     cpu = CpuTemp()
     zone = ZoneTemp()

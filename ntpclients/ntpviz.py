@@ -69,7 +69,7 @@ if sys.version_info[0] == 2:
     sys.setdefaultencoding('utf8')
 
     def open(file, mode='r', buffering=-1, encoding=None, errors=None):
-        "Redefine open()"
+        """Redefine open()"""
         return(codecs.open(filename=file, mode=mode, encoding=encoding,
                errors=errors, buffering=buffering))
 
@@ -103,7 +103,7 @@ refclock_name = {'127.127.20.0': 'NMEA(0)',
 # Gack, python before 3.2 has no defined tzinfo for utc...
 # define our own
 class UTC(datetime.tzinfo):
-    """UTC"""
+    """UTC."""
 
     def utcoffset(self, dt):
         return datetime.timedelta(0)
@@ -132,10 +132,10 @@ if (3 > sys.version_info[0]) and (7 > sys.version_info[1]):
 
 # overload ArgumentParser
 class MyArgumentParser(argparse.ArgumentParser):
-    "class to parse arguments"
+    """class to parse arguments."""
 
     def convert_arg_line_to_args(self, arg_line):
-        '''Make options file more tolerant'''
+        """Make options file more tolerant."""
         # strip out trailing comments
         arg_line = re.sub('\s+#.*$', '', arg_line)
 
@@ -150,7 +150,7 @@ class MyArgumentParser(argparse.ArgumentParser):
 
 
 def print_profile():
-    """called by atexit() on normal exit to print profile data"""
+    """called by atexit() on normal exit to print profile data."""
     pr.disable()
     pr.print_stats('tottime')
     pr.print_stats('cumtime')
@@ -164,7 +164,7 @@ def print_profile():
 #   Mean, Variance, Standard Deviation, Skewness and Kurtosis
 
 class RunningStats(object):
-    "Calculate mean, variance, sigma, skewness and kurtosis"
+    """Calculate mean, variance, sigma, skewness and kurtosis."""
 
     def __init__(self, values):
         self.num = len(values)     # number of samples
@@ -202,7 +202,7 @@ class RunningStats(object):
 
 # class for calced values
 class VizStats(ntp.statfiles.NTPStats):
-    "Class for calculated values"
+    """Class for calculated values."""
 
     percs = {}          # dictionary of percentages
     title = ''          # title
@@ -373,7 +373,7 @@ class VizStats(ntp.statfiles.NTPStats):
 
 
 def gnuplot_fmt(min_val, max_val):
-    "return optimal gnuplot format"
+    """return optimal gnuplot format."""
     span = max_val - min_val
     if 6 <= span:
         fmt = '%.0f'
@@ -392,7 +392,7 @@ def gnuplot_fmt(min_val, max_val):
 # Investigate.
 
 def gnuplot(template, outfile=None):
-    "Run a specified gnuplot program."
+    """Run a specified gnuplot program."""
 
     if not template:
         # silently ignore empty plots
@@ -444,7 +444,7 @@ def gnuplot(template, outfile=None):
 
 
 class NTPViz(ntp.statfiles.NTPStats):
-    "Class for visualizing statistics from a single server."
+    """Class for visualizing statistics from a single server."""
 
     # Python takes single quotes here. Since no % substitution
     Common = """\
@@ -468,7 +468,7 @@ set rmargin 10
                                         endtime=endtime)
 
     def plot_slice(self, rows, item1, item2=None):
-        "slice 0,item1, maybe item2, from rows, ready for gnuplot"
+        """slice 0,item1, maybe item2, from rows, ready for gnuplot."""
         # speed up by only sending gnuplot the data it will actually use
         # WARNING: this is hot code, only modify if you profile
         # since we are looping the data, get the values too
@@ -515,7 +515,7 @@ set rmargin 10
         return (plot_data, values1)
 
     def local_offset_gnuplot(self):
-        "Generate gnuplot code graphing local clock loop statistics"
+        """Generate gnuplot code graphing local clock loop statistics."""
         if not self.loopstats:
             sys.stderr.write("ntpviz: WARNING: no loopstats to graph\n")
             return ''
@@ -578,7 +578,7 @@ file.</p>
         return ret
 
     def local_freq_temps_plot(self):
-        "Generate gnuplot code graphing local frequency and temps"
+        """Generate gnuplot code graphing local frequency and temps."""
         if not self.loopstats:
             sys.stderr.write("ntpviz: WARNING: no loopstats to graph\n")
             return ''
@@ -671,7 +671,7 @@ file, and field 3 from the tempstats log file.</p>
         return ret
 
     def local_temps_gnuplot(self):
-        "Generate gnuplot code graphing local temperature statistics"
+        """Generate gnuplot code graphing local temperature statistics."""
         sitename = self.sitename
         tempsmap = self.tempssplit()
         tempslist = list(tempsmap.keys())
@@ -733,7 +733,7 @@ component of frequency drift.</p>
         return ret
 
     def local_gps_gnuplot(self):
-        "Generate gnuplot code graphing local GPS statistics"
+        """Generate gnuplot code graphing local GPS statistics."""
         sitename = self.sitename
         gpsmap = self.gpssplit()
         gpslist = list(gpsmap.keys())
@@ -816,7 +816,7 @@ impossible.</p>
         return ret
 
     def local_error_gnuplot(self):
-        "Plot the local clock frequency error."
+        """Plot the local clock frequency error."""
         if not self.loopstats:
             sys.stderr.write("ntpviz: WARNING: no loopstats to graph\n")
             return ''
@@ -875,7 +875,7 @@ line at 0ppm.  Expected values of 99%-1% percentiles: 0.4ppm</p>
         return ret
 
     def loopstats_gnuplot(self, fld, title, legend, freq):
-        "Generate gnuplot code of a given loopstats field"
+        """Generate gnuplot code of a given loopstats field."""
         if not self.loopstats:
             sys.stderr.write("ntpviz: WARNING: no loopstats to graph\n")
             return ''
@@ -943,16 +943,16 @@ plot \
         return ret
 
     def local_offset_jitter_gnuplot(self):
-        "Generate gnuplot code of local clock loop standard deviation"
+        """Generate gnuplot code of local clock loop standard deviation."""
         return self.loopstats_gnuplot(4, "Local RMS Time Jitter", "Jitter", 0)
 
     def local_offset_stability_gnuplot(self):
-        "Generate gnuplot code graphing local clock stability"
+        """Generate gnuplot code graphing local clock stability."""
         return self.loopstats_gnuplot(5, "Local RMS Frequency Jitter",
                                       "Stability", 1)
 
     def peerstats_gnuplot(self, peerlist, fld, title, ptype):
-        "Plot a specified field from peerstats."
+        """Plot a specified field from peerstats."""
 
         peerdict = self.peersplit()
         if not peerlist:
@@ -1167,17 +1167,17 @@ plot \
         return ret
 
     def peer_offsets_gnuplot(self, peerlist=None):
-        "gnuplot Peer Offsets"
+        """gnuplot Peer Offsets."""
         return self.peerstats_gnuplot(peerlist, 4, "Server Offset",
                                       "offset")
 
     def peer_jitters_gnuplot(self, peerlist=None):
-        "gnuplot Peer Jitters"
+        """gnuplot Peer Jitters."""
         return self.peerstats_gnuplot(peerlist, 7, "Server Jitter",
                                       "jitter")
 
     def local_offset_histogram_gnuplot(self):
-        "Plot a histogram of clock offset values from loopstats."
+        """Plot a histogram of clock offset values from loopstats."""
         if not self.loopstats:
             sys.stderr.write("ntpviz: WARNING: no loopstats to graph\n")
             return ''
@@ -1286,7 +1286,7 @@ plot \
 
 
 def local_offset_multiplot(statlist):
-    "Plot comparative local offsets for a list of NTPViz objects."
+    """Plot comparative local offsets for a list of NTPViz objects."""
 
     out = {}
     out['size'] = args.img_size

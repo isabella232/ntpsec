@@ -56,7 +56,7 @@ NTP_FLOAT = 0xa   # Float value
 
 
 class Ntpq(cmd.Cmd):
-    "ntpq command interpreter"
+    """ntpq command interpreter."""
 
     def __init__(self, session):
         cmd.Cmd.__init__(self)
@@ -91,7 +91,7 @@ class Ntpq(cmd.Cmd):
                 for x in dir(self.__class__)]
 
     def emptyline(self):
-        "Called when an empty line is entered in response to the prompt."
+        """Called when an empty line is entered in response to the prompt."""
         pass
 
     def precmd(self, line):
@@ -102,7 +102,8 @@ class Ntpq(cmd.Cmd):
         return line
 
     def default(self, line):
-        "Called on an input line when the command prefix is not recognized."
+        """Called on an input line when the command prefix is not
+        recognized."""
         cmd, arg, line = self.parseline(line)
         try:
             dotext = 'do_'+cmd
@@ -264,7 +265,7 @@ usage: help [ command ]
             pass
 
     def __assoc_valid(self, line, required=False):
-        "Process a numeric associd or index."
+        """Process a numeric associd or index."""
         # FIXME: This does a useless call to __dogetassoc() when associd == 0
         # No big deal most of the time.  Just a useless packet exchange.
         if not line:
@@ -303,7 +304,7 @@ usage: help [ command ]
                 return associd
 
     def __assoc_range_valid(self, line):
-        "Try to get a range of assoc IDs."
+        """Try to get a range of assoc IDs."""
         tokens = line.split()
         if len(tokens) < 2:
             return ()
@@ -316,7 +317,7 @@ usage: help [ command ]
         return range(lo, hi+1)
 
     def printvars(self, variables, dtype, quiet):
-        "Dump variables in raw (actually, semi-cooked) mode."
+        """Dump variables in raw (actually, semi-cooked) mode."""
         if self.rawmode:
             if not quiet:
                 self.say("status=0x%04x,\n" % self.session.rstatus)
@@ -337,7 +338,7 @@ usage: help [ command ]
         self.say(text)
 
     def __dolist(self, varlist, associd, op, type, quiet=False):
-        "List variables associated with a specified peer."
+        """List variables associated with a specified peer."""
         try:
             variables = self.session.readvar(associd, varlist, op, raw=True)
         except ntp.packet.ControlException as e:
@@ -365,7 +366,7 @@ usage: help [ command ]
     # Unexposed helper tables and functions end here
 
     def do_units(self, _unused):
-        "toggle unit display"
+        """toggle unit display."""
         self.showunits = not self.showunits
 
     def help_units(self):
@@ -375,12 +376,12 @@ usage: units
 """)
 
     def do_EOF(self, _unused):
-        "exit ntpq"
+        """exit ntpq."""
         self.say("\n")
         return True
 
     def do_timeout(self, line):
-        "set the primary receive time out"
+        """set the primary receive time out."""
         if line:
             try:
                 self.session.primary_timeout = int(line)
@@ -395,7 +396,7 @@ usage: timeout [ msec ]
 """)
 
     def collect_display(self, associd, variables, decodestatus):
-        "Query and display a collection of variables from the system."
+        """Query and display a collection of variables from the system."""
         try:
             queried = self.session.readvar(associd,
                                            [v[0] for v in variables],
@@ -480,7 +481,7 @@ usage: timeout [ msec ]
             self.warn("display interrupted")
 
     def do_delay(self, line):
-        "set the delay added to encryption time stamps"
+        """set the delay added to encryption time stamps."""
         if not line:
             self.say("delay %d ms\n" % self.auth_delay)
         else:
@@ -498,7 +499,7 @@ usage: delay [ msec ]
 """)
 
     def do_host(self, line):
-        "specify the host whose NTP server we talk to"
+        """specify the host whose NTP server we talk to."""
         if not line:
             if self.session.havehost():
                 self.say("current host is %s\n" % self.session.hostname)
@@ -532,7 +533,7 @@ usage: host [-4|-6] [hostname]
 """)
 
     def do_poll(self, line):
-        "poll an NTP server in client mode `n' times"
+        """poll an NTP server in client mode `n' times."""
         # And it's not in the C version, so we're off the hook here
         self.warn("WARNING: poll not implemented yet")
 
@@ -543,7 +544,7 @@ usage: poll [n] [verbose]
 """)
 
     def do_passwd(self, line):
-        "specify a password to use for authenticated requests"
+        """specify a password to use for authenticated requests."""
         try:
             self.session.password()
         except ntp.packet.ControlException as e:
@@ -558,7 +559,7 @@ usage: passwd []
 """)
 
     def do_hostnames(self, line):
-        "specify whether hostnames or net numbers are printed"
+        """specify whether hostnames or net numbers are printed."""
         if not line:
             pass
         elif line == "yes":
@@ -588,7 +589,7 @@ usage: hostnames [yes|no|hostname|hostnum]
 """)
 
     def do_debug(self, line):
-        "set/change debugging level"
+        """set/change debugging level."""
         if not line:
             pass
         elif line == "more":
@@ -607,8 +608,10 @@ usage: hostnames [yes|no|hostname|hostnum]
         self.say("debug level is %d\n" % self.debug)
 
     def do_logfile(self, line):
-        """view/change logfile. \"<stderr>\" will log to stderr
-           instead of a file"""
+        """view/change logfile.
+
+        \"<stderr>\" will log to stderr instead of a file
+        """
         if not line:
             self.say(repr(self.logfp.name) + "\n")
             return
@@ -631,7 +634,7 @@ usage: debug [no|more|less|n]
 """)
 
     def do_exit(self, line):
-        "exit ntpq"
+        """exit ntpq."""
         return True
 
     def help_exit(self):
@@ -648,7 +651,7 @@ usage: quit
 """)
 
     def do_keyid(self, line):
-        "set keyid to use for authenticated requests"
+        """set keyid to use for authenticated requests."""
         if line:
             try:
                 self.session.keyid = int(line)
@@ -666,7 +669,7 @@ usage: keyid [key#]
 """)
 
     def do_version(self, line):
-        "print version number"
+        """print version number."""
         self.say(version + "\n")
 
     def help_version(self):
@@ -676,7 +679,7 @@ usage: version
 """)
 
     def do_direct(self, line):
-        "toggle direct mode output"
+        """toggle direct mode output."""
         self.directmode = not self.directmode
         if self.directmode:
             self.say("Direct mode is on\n")
@@ -690,7 +693,7 @@ usage: direct
 """)
 
     def do_raw(self, line):
-        "do raw mode variable output"
+        """do raw mode variable output."""
         self.rawmode = True
         self.say("Output set to raw\n")
 
@@ -701,7 +704,7 @@ usage: raw
 """)
 
     def do_cooked(self, line):
-        "do cooked mode variable output"
+        """do cooked mode variable output."""
         self.rawmode = False
         self.say("Output set to cooked\n")
 
@@ -712,7 +715,7 @@ usage: cooked
 """)
 
     def do_authenticate(self, line):
-        "always authenticate requests to this server"
+        """always authenticate requests to this server."""
         if not line:
             pass
         elif line == "yes":
@@ -733,7 +736,7 @@ usage: authenticate [yes|no]
 """)
 
     def do_ntpversion(self, line):
-        "set the NTP version number to use for requests"
+        """set the NTP version number to use for requests."""
         if not line:
             pass
         else:
@@ -757,7 +760,7 @@ usage: ntpversion [version number]
 """)
 
     def do_keytype(self, line):
-        "set key type to use for authenticated requests"
+        """set key type to use for authenticated requests."""
         if not line:
             self.say("Keytype: %s\n" % self.session.keytype)
         elif line.upper() in ['AES', 'AES128CMAC']:
@@ -775,7 +778,8 @@ usage: keytype [digest-name]
 """)
 
     def do_associations(self, line):
-        "print list of association IDs and statuses for the server's peers"
+        """print list of association IDs and statuses for the server's
+        peers."""
         if self.__dogetassoc():
             self.__printassoc(showall=True)
 
@@ -786,7 +790,7 @@ usage: associations
 """)
 
     def do_passociations(self, line):
-        "print list of associations returned by last associations command"
+        """print list of associations returned by last associations command."""
         self.__printassoc(showall=True)
 
     def help_passociations(self):
@@ -796,7 +800,7 @@ usage: passociations
 """)
 
     def do_lassociations(self, line):
-        "print list of associations including all client information"
+        """print list of associations including all client information."""
         if self.__dogetassoc():
             self.__printassoc(showall=True)
 
@@ -807,9 +811,8 @@ usage: lassociations
 """)
 
     def do_lpassociations(self, line):
-        """\
-print last obtained list of associations, including client information
-"""
+        """\ print last obtained list of associations, including client
+        information."""
         self.__printassoc(showall=True)
 
     def help_lpassociations(self):
@@ -820,7 +823,7 @@ usage: lpassociations
 """)
 
     def do_addvars(self, line):
-        "add variables to the variable list or change their values"
+        """add variables to the variable list or change their values."""
         if not line:
             self.warn("usage: addvars name[=value][,...]\n")
             return
@@ -839,7 +842,7 @@ usage: addvars name[=value][,...]
 """)
 
     def do_rmvars(self, line):
-        "remove variables from the variable list"
+        """remove variables from the variable list."""
         if not line:
             self.warn("usage: rmvars name[,...]\n")
             return
@@ -857,7 +860,7 @@ usage: rmvars name[,...]
 """)
 
     def do_clearvars(self, line):
-        "remove all variables from the variable list"
+        """remove all variables from the variable list."""
         self.uservars.clear()
 
     def help_clearvars(self):
@@ -867,7 +870,7 @@ usage: clearvars
 """)
 
     def do_showvars(self, line):
-        "print variables on the variable list"
+        """print variables on the variable list."""
         if not self.uservars:
             self.say("No variables on list.\n")
         for (name, value) in self.uservars.items():
@@ -883,7 +886,7 @@ usage: showvars
 """)
 
     def do_readlist(self, line):
-        "read the system or peer variables included in the variable list"
+        """read the system or peer variables included in the variable list."""
         associd = self.__assoc_valid(line)
         if associd >= 0:
             qtype = ntp.ntpc.TYPE_SYS if associd == 0 else ntp.ntpc.TYPE_PEER
@@ -897,7 +900,7 @@ usage: readlist [assocID]
 """)
 
     def do_rl(self, line):
-        "read the system or peer variables included in the variable list"
+        """read the system or peer variables included in the variable list."""
         self.do_readlist(line)
 
     def help_rl(self):
@@ -907,7 +910,7 @@ usage: rl [assocID]
 """)
 
     def do_writelist(self, line):
-        "write the system or peer variables included in the variable list"
+        """write the system or peer variables included in the variable list."""
         pass
 
     def help_writelist(self):
@@ -917,7 +920,7 @@ usage: writelist [ assocID ]
 """)
 
     def do_readvar(self, line):
-        "read system or peer variables"
+        """read system or peer variables."""
         associd = self.__assoc_valid(line)
         if associd >= 0:
             qtype = ntp.ntpc.TYPE_SYS if associd == 0 else ntp.ntpc.TYPE_PEER
@@ -931,7 +934,7 @@ usage: readvar [assocID] [varname1] [varname2] [varname3]
 """)
 
     def do_rv(self, line):
-        "read system or peer variables"
+        """read system or peer variables."""
         self.do_readvar(line)
 
     def help_rv(self):
@@ -941,7 +944,7 @@ usage: rv [assocID] [varname1] [varname2] [varname3]
 """)
 
     def do_writevar(self, line):
-        "write system or peer variables"
+        """write system or peer variables."""
         pass
 
     def help_writevar(self):
@@ -951,7 +954,7 @@ usage: writevar assocID name=value,[...]
 """)
 
     def do_mreadlist(self, line):
-        "read the peer variables in the variable list for multiple peers"
+        """read the peer variables in the variable list for multiple peers."""
         if not line:
             self.warn("usage: mreadlist assocIDlow assocIDhigh\n")
             return
@@ -973,7 +976,7 @@ usage: mreadlist assocIDlow assocIDhigh
 """)
 
     def do_mrl(self, line):
-        "read the peer variables in the variable list for multiple peers"
+        """read the peer variables in the variable list for multiple peers."""
         if not line:
             self.warn("usage: mrl assocIDlow assocIDhigh")
             return
@@ -986,7 +989,7 @@ usage: mrl assocIDlow assocIDhigh
 """)
 
     def do_mreadvar(self, line):
-        "read peer variables from multiple peers"
+        """read peer variables from multiple peers."""
         if not line:
             self.warn("usage: mreadvar assocIDlow assocIDhigh  "
                       "[ name=value[,...] ]")
@@ -1010,7 +1013,7 @@ usage: mreadvar assocIDlow assocIDhigh [name=value[,...]]
 """)
 
     def do_mrv(self, line):
-        "read peer variables from multiple peers"
+        """read peer variables from multiple peers."""
         if not line:
             self.warn(
                 "usage: mrv assocIDlow assocIDhigh [name=value[,...]]")
@@ -1024,7 +1027,7 @@ usage: mrv assocIDlow assocIDhigh [name=value[,...]]
 """)
 
     def do_clocklist(self, line):
-        "read the clock variables included in the variable list"
+        """read the clock variables included in the variable list."""
         assoc = self.__assoc_valid(line)
         if assoc >= 0:
             self.__dolist(self.uservars.keys(),
@@ -1038,7 +1041,7 @@ usage: clocklist [assocID]
 """)
 
     def do_cl(self, line):
-        "read the clock variables included in the variable list"
+        """read the clock variables included in the variable list."""
         self.do_clocklist(line)
 
     def help_cl(self):
@@ -1048,7 +1051,7 @@ usage: cl [assocID]
 """)
 
     def do_clockvar(self, line):
-        "read clock variables"
+        """read clock variables."""
         assoc = self.__assoc_valid(line)
         if assoc == 0:
             self.warn("This command requires the association ID of a clock.")
@@ -1063,7 +1066,7 @@ usage: clockvar [assocID] [name=value[,...]]
 """)
 
     def do_cv(self, line):
-        "read clock variables"
+        """read clock variables."""
         self.do_clockvar(line)
 
     def help_cv(self):
@@ -1073,7 +1076,7 @@ usage: cv [ assocID ] [ name=value[,...] ]
 """)
 
     def do_pstats(self, line):
-        "show statistics for a peer"
+        """show statistics for a peer."""
         pstats = (
             ("srcadr", "remote host:          ", NTP_ADD),
             ("dstadr", "local address:        ", NTP_ADD),
@@ -1105,7 +1108,7 @@ usage: pstats assocID
 """)
 
     def do_peers(self, line):
-        "obtain and print a list of the server's peers [IP version]"
+        """obtain and print a list of the server's peers [IP version]"""
         self.__dopeers(showall=True, mode="peers")
 
     def help_peers(self):
@@ -1115,9 +1118,8 @@ usage: peers
 """)
 
     def do_apeers(self, line):
-        """
-obtain and print a list of the server's peers and their assocIDs [IP version]
-"""
+        """obtain and print a list of the server's peers and their assocIDs [IP
+        version]"""
         self.__dopeers(showall=True, mode="apeers")
 
     def help_apeers(self):
@@ -1128,7 +1130,7 @@ usage: apeers
 """)
 
     def do_lpeers(self, line):
-        "obtain and print a list of all peers and clients [IP version]"
+        """obtain and print a list of all peers and clients [IP version]"""
         self.__dopeers(showall=True, mode="peers")
 
     def help_lpeers(self):
@@ -1138,9 +1140,8 @@ usage: lpeers
 """)
 
     def do_opeers(self, line):
-        """
-print peer list the old way, with dstadr shown rather than refid [IP version]
-"""
+        """print peer list the old way, with dstadr shown rather than refid [IP
+        version]"""
         self.__dopeers(showall=True, mode="opeers")
 
     def help_opeers(self):
@@ -1151,8 +1152,8 @@ usage: opeers
 """)
 
     def do_lopeers(self, line):
-        """obtain and print a list of all peers and clients showing
-        dstadr [IP version]"""
+        """obtain and print a list of all peers and clients showing dstadr [IP
+        version]"""
         self.__dopeers(showall=True, mode="opeers")
 
     def help_lopeers(self):
@@ -1163,7 +1164,7 @@ usage: lopeers
 """)
 
     def do_hot_config(self, line):
-        "send a remote configuration command to ntpd"
+        """send a remote configuration command to ntpd."""
         try:
             self.session.password()
         except ntp.packet.ControlException as e:
@@ -1198,7 +1199,7 @@ usage: config <configuration command line>
 """)
 
     def do_config_from_file(self, line):
-        "configure ntpd using the configuration filename"
+        """configure ntpd using the configuration filename."""
         try:
             with open(line) as rfp:
                 self.say("%s\n" % self.session.config(rfp.read()))
@@ -1229,9 +1230,9 @@ usage: noflake
     def do_doflake(self, line):
         """Drop some received packets for testing.
 
-        Probabilities 0 and 1 should be certainly accepted
-        and discarded respectively. No default, but 0.1
-        should be a one in ten loss rate.
+        Probabilities 0 and 1 should be certainly accepted and discarded
+        respectively. No default, but 0.1 should be a one in ten loss
+        rate.
         """
         try:
             _ = float(line)
@@ -1252,8 +1253,11 @@ usage: doflake <probability>
 """)
 
     def do_mrulist(self, line):
-        """display the list of most recently seen source addresses,
-           tags mincount=... resall=0x... resany=0x..."""
+        """display the list of most recently seen source addresses, tags
+        mincount=...
+
+        resall=0x... resany=0x...
+        """
         cmdvars = {}
         for item in line.split(" "):
             if not item:
@@ -1340,7 +1344,7 @@ usage: mrulist [tag=value] [tag=value] [tag=value] [tag=value]
 """)
 
     def do_ifstats(self, line):
-        "show statistics for each local address ntpd is using"
+        """show statistics for each local address ntpd is using."""
         try:
             self.session.password()
             entries = self.session.ifstats()
@@ -1365,7 +1369,7 @@ usage: ifstats
 """)
 
     def do_reslist(self, line):
-        "show ntpd access control list"
+        """show ntpd access control list."""
         try:
             self.session.password()
             entries = self.session.reslist()
@@ -1392,7 +1396,7 @@ usage: reslist
 # FIXME: This table should move to ntpd
 #          so the answers track when ntpd is updated
     def do_sysinfo(self, _line):
-        "display system summary"
+        """display system summary."""
         sysinfo = (
             ("peeradr", "system peer:      ", NTP_ADP),
             ("peermode", "system peer mode: ", NTP_MODE),
@@ -1420,7 +1424,7 @@ usage: sysinfo
 # FIXME: This table should move to ntpd
 #          so the answers track when ntpd is updated
     def do_kerninfo(self, _line):
-        "display kernel loop and PPS statistics"
+        """display kernel loop and PPS statistics."""
         kerninfo = (
             ("koffset", "pll offset:          ", NTP_FLOAT),
             ("kfreq", "pll frequency:       ", NTP_FLOAT),
@@ -1450,7 +1454,7 @@ usage: kerninfo
 # FIXME: This table should move to ntpd
 #          so the answers track when ntpd is updated
     def do_sysstats(self, _line):
-        "display system uptime and packet counts"
+        """display system uptime and packet counts."""
         sysstats = (
             ("ss_uptime", "uptime:               ", NTP_INT),
             ("ss_reset", "sysstats reset:       ", NTP_INT),
@@ -1477,7 +1481,7 @@ usage: sysstats
 # FIXME: This table should move to ntpd
 #          so the answers track when ntpd is updated
     def do_monstats(self, _line):
-        "display monitor (mrulist) counters and limits"
+        """display monitor (mrulist) counters and limits."""
         monstats = (
             ("mru_enabled",     "enabled:              ", NTP_INT),
             ("mru_hashslots",   "hash slots in use:    ", NTP_INT),
@@ -1507,7 +1511,7 @@ usage: monstats
 # FIXME: This table should move to ntpd
 #          so the answers track when ntpd is updated
     def do_authinfo(self, _line):
-        "display symmetric authentication counters"
+        """display symmetric authentication counters."""
         authinfo = (
             ("authreset",          "time since reset:    ", NTP_INT),
             ("authkeys",           "stored keys:         ", NTP_INT),
@@ -1538,7 +1542,7 @@ usage: authinfo
 # FIXME: This table should move to ntpd
 #          so the answers track when ntpd is updated
     def do_ntsinfo(self, _line):
-        "display NTS authentication counters"
+        """display NTS authentication counters."""
         ntsinfo = (
    ("nts_client_send",           "NTS client sends:          ", NTP_INT),
    ("nts_client_recv_good",      "NTS client recvs good:     ", NTP_INT),
@@ -1568,7 +1572,7 @@ usage: ntsinfo
 # FIXME: This table should move to ntpd
 #          so the answers track when ntpd is updated
     def do_iostats(self, _line):
-        "display network input and output counters"
+        """display network input and output counters."""
         iostats = (
             ("iostats_reset", "time since reset:     ", NTP_INT),
             ("total_rbuf", "receive buffers:      ", NTP_INT),
@@ -1594,7 +1598,7 @@ usage: iostats
 # FIXME: This table should move to ntpd
 #          so the answers track when ntpd is updated
     def do_timerstats(self, line):
-        "display interval timer counters"
+        """display interval timer counters."""
         timerstats = (
             ("timerstats_reset", "time since reset:  ", NTP_INT),
             ("timer_overruns", "timer overruns:    ", NTP_INT),
