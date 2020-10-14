@@ -74,7 +74,7 @@ def iso8601(t):
     return time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime(t))
 
 
-def statline(_peerlist, _mrulist, nyquist):
+def statline(_peerlist, _mrulist, nyquist2):
     """Generate a status line."""
     # We don't use stdversion here because the presence of a date is confusing
     leader = sysvars['version'][0]
@@ -82,26 +82,26 @@ def statline(_peerlist, _mrulist, nyquist):
     if span.entries:
         trailer = "Updated: %s (%s)" \
                   % (iso8601(int(ntp.ntpc.lfptofloat(span.entries[0].last))),
-                     ntp.util.PeerSummary.prettyinterval(nyquist))
+                     ntp.util.PeerSummary.prettyinterval(nyquist2))
     else:
         trailer = ""
     spacer = ((peer_report.termwidth - 1) - len(leader) - len(trailer)) * " "
     return leader + spacer + trailer
 
 
-def peer_detail(variables, showunits=False):
+def peer_detail(variables2, show_units=False):
     """Show the things a peer summary doesn't, cooked slightly differently."""
     # All of an rv display except refid, reach, delay, offset, jitter.
     # One of the goals here is to emit field values at fixed positions
     # on the 2D display, so that changes in the details are easier to spot.
     vcopy = {}
     vcopyraw = {}
-    vcopy.update(variables)
+    vcopy.update(variables2)
     width = ntp.util.termsize().width - 2
     # Need to separate the casted from the raw
-    for key in vcopy.keys():
-        vcopyraw[key] = vcopy[key][1]
-        vcopy[key] = vcopy[key][0]
+    for ikey in vcopy:
+        vcopyraw[ikey] = vcopy[ikey][1]
+        vcopy[ikey] = vcopy[ikey][0]
     vcopy["leap"] = ("no-leap", "add-leap", "del-leap",
                      "unsync")[vcopy["leap"]]
     for fld in ('xmt', 'rec', 'reftime'):
@@ -109,7 +109,7 @@ def peer_detail(variables, showunits=False):
             vcopy[fld] = "***missing***"
         else:
             vcopy[fld] = ntp.util.rfc3339(ntp.ntpc.lfptofloat(vcopy[fld]))
-    if showunits:
+    if show_units:
         for name in ntp.util.MS_VARS:
             if name in vcopy:
                 vcopy[name] = ntp.util.unitify(vcopyraw[name],
@@ -154,8 +154,8 @@ filtdelay  = %(filtdelay)s
 filtoffset = %(filtoffset)s
 filtdisp   = %(filtdisp)s
 """
-    str = peerfmt % vcopy
-    return str.expandtabs()
+    out = peerfmt % vcopy
+    return out.expandtabs()
 
 
 class Fatal(Exception):
@@ -409,9 +409,9 @@ if __name__ == '__main__':
                 try:
                     helpmode = False
                     key = stdscr.getkey()
-                    if key == 'q' or key == 'x':
+                    if key in ('q', 'x'):
                         raise SystemExit(0)
-                    elif key == 'a':
+                    if key == 'a':
                         peer_report.displaymode = 'apeers'
                     elif key == 'd':
                         if not selectmode:
@@ -453,11 +453,12 @@ if __name__ == '__main__':
                             peer_report.displaymode = 'opeers'
                         else:
                             peer_report.displaymode = 'peers'
-                    elif key == 'j' or key == "KEY_DOWN":
+
+                    elif key in ('j', "KEY_DOWN"):
                         if showpeers:
                             selected += 1
                             selected %= len(peers)
-                    elif key == 'k' or key == "KEY_UP":
+                    elif key in ('k', "KEY_UP"):
                         if showpeers:
                             selected += len(peers) - 1
                             selected %= len(peers)

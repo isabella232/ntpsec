@@ -55,8 +55,9 @@ except ImportError as e:
 # The one new option in this version is -p, borrowed from ntpdate.
 
 
+
 def read_append(s, packets, packet, sockaddr):
-    d, a = s.recvfrom(1024)
+    d, _ = s.recvfrom(1024)
     if debug >= 2:
         ntp.packet.dump_hex_printable(d)
     if credentials:
@@ -70,10 +71,10 @@ def read_append(s, packets, packet, sockaddr):
         elif debug:
             log("MAC verification on reply from %s succeeded"
                 % sockaddr[0])
-    pkt = ntp.packet.SyncPacket(d)
-    pkt.hostname = server
-    pkt.resolved = sockaddr[0]
-    packets.append(pkt)
+    pkt2 = ntp.packet.SyncPacket(d)
+    pkt2.hostname = oserver
+    pkt2.resolved = sockaddr[0]
+    packets.append(pkt2)
     return packets
 
 
@@ -92,13 +93,13 @@ def queryhost(server, concurrent, timeout=5, port=123):
     request.transmit_timestamp = ntp.packet.SyncPacket.posix_to_ntp(
         time.time())
     packet = request.flatten()
-    needgap = (len(iptuples) > 1) and (gap > 0)
-    firstloop = True
-    for (family, socktype, proto, canonname, sockaddr) in iptuples:
-        if needgap and not firstloop:
+    needgap_i = (len(iptuples) > 1) and (gap > 0)
+    firstloop_i = True
+    for (family, socktype, _, _, sockaddr) in iptuples:
+        if needgap_i and not firstloop_i:
             time.sleep(gap)
-        if firstloop:
-            firstloop = False
+        if firstloop_i:
+            firstloop_i = False
         if debug:
             log("querying %s (%s)" % (sockaddr[0], server))
         s = socket.socket(family, socktype)
@@ -110,8 +111,7 @@ def queryhost(server, concurrent, timeout=5, port=123):
             if mac is None:
                 log("MAC generation failed while querying %s" % server)
                 raise SystemExit(1)
-            else:
-                packet += mac
+            packet += mac
         try:
             s.sendto(packet, sockaddr)
         except socket.error as e:
@@ -151,33 +151,34 @@ def clock_select(packets):
     #
     filtered = []
     for response in packets:
-        def drop(msg):
-            log("%s: Response dropped: %s" % (response.hostname, msg))
+        _ = response.hostname
+        def drop(host, msg):
+            log("%s: Response dropped: %s" % (host, msg))
         if response.stratum > NTP_INFIN:
-            drop("stratum too high")
+            drop(_, "stratum too high")
             continue
         if response.version() < ntp.magic.NTP_OLDVERSION:
-            drop("response version %d is too old" % response.version())
+            drop(_, "response version %d is too old" % response.version())
             continue
         if response.mode() != ntp.magic.MODE_SERVER:
-            drop("unexpected response mode %d" % response.mode())
+            drop(_, "unexpected response mode %d" % response.mode())
             continue
         if response.version() > ntp.magic.NTP_VERSION:
-            drop("response version %d is too new" % response.version())
+            drop(_, "response version %d is too new" % response.version())
             continue
         if response.stratum == 0:
             # FIXME: Do some kind of semi-useful diagnostic dump here
-            drop("stratum 0, probable KOD packet")
+            drop(_, "stratum 0, probable '%s' KOD packet" % response.refid)
             continue
         if response.leap() == "unsync":
-            drop("leap not in sync")
+            drop(_, "leap not in sync")
             continue
         if not response.trusted:
-            drop("request was authenticated but server is untrusted")
+            drop(_, "request was authenticated but server is untrusted")
             continue
         # Bypass this test if we ever support broadcast-client mode again
         if response.origin_timestamp == 0:
-            drop("unexpected response timestamp")
+            drop(_, "unexpected response timestamp")
             continue
         filtered.append(response)
 
@@ -399,22 +400,22 @@ if __name__ == '__main__':
             returned = []
             needgap = (samples > 1) and (gap > 0)
             firstloop = True
-            for s in range(samples):
+            for _ in range(samples):
                 if needgap and not firstloop:
                     time.sleep(gap)
                 if firstloop:
                     firstloop = False
-                for server in concurrent_hosts:
+                for oserver in concurrent_hosts:
                     try:
-                        returned += queryhost(server=server,
+                        returned += queryhost(server=oserver,
                                               concurrent=True,
                                               timeout=timeout)
                     except ntp.packet.SyncException as e:
                         log(str(e))
                         continue
-                for server in arguments:
+                for oserver in arguments:
                     try:
-                        returned += queryhost(server=server,
+                        returned += queryhost(server=oserver,
                                               concurrent=False,
                                               timeout=timeout)
                     except ntp.packet.SyncException as e:
@@ -451,13 +452,9 @@ if __name__ == '__main__':
                 rc = ntp.ntpc.step_systime(offset)
             elif slew:
                 rc = ntp.ntpc.adj_systime(offset)
-            if rc:
-                raise SystemExit(0)
-            else:
-                raise SystemExit(1)
-        else:
-            log("no eligible servers")
-            raise SystemExit(1)
+            raise SystemExit(0 if rc else 1)
+        log("no eligible servers")
+        raise SystemExit(1)
     except KeyboardInterrupt:
         print("")
 

@@ -43,7 +43,7 @@ DEFLOG = "ntpsnmpd.log"
 
 
 class DataSource(ntp.agentx.MIBControl):
-    def __init__(self, hostname=DEFHOST, settingsFile=None, notifySpin=0.1):
+    def __init__(self, ihostname=DEFHOST, settingsFile=None, notifySpin=0.1):
         # This is defined as a dict tree because it is simpler, and avoids
         # certain edge cases
         # OIDs are relative from ntp root
@@ -152,7 +152,7 @@ class DataSource(ntp.agentx.MIBControl):
         # print(repr(self.oidTree))
         # print(self.oidTree[1]["subids"][1][1][0])
         self.session = ntp.packet.ControlSession()
-        self.hostname = hostname if hostname else DEFHOST
+        self.hostname = ihostname if ihostname else DEFHOST
         self.session.openhost(self.hostname)
         self.settingsFilename = settingsFile
         # Cache so we don't hammer ntpd, default 1 second timeout
@@ -356,8 +356,8 @@ class DataSource(ntp.agentx.MIBControl):
         if data is None:
             return None
         protoerr = 0
-        for key in data.keys():
-            protoerr += data[key]
+        for ikey in data.keys():
+            protoerr += data[ikey]
         return ax.Varbind(ax.VALUE_COUNTER32, oid, protoerr)
 
     def cbr_statusNotifications(self, oid):
@@ -537,7 +537,7 @@ class DataSource(ntp.agentx.MIBControl):
             try:
                 sockinfo = socket.getaddrinfo(srcadr, None)[0][-1]
                 addr = sockinfo[0]
-                ipv6 = True if len(sockinfo) == 4 else False
+                ipv6 = bool(len(sockinfo) == 4)
             except socket.gaierror:
                 addr = None  # how to handle?
                 ipv6 = None
@@ -615,8 +615,8 @@ class DataSource(ntp.agentx.MIBControl):
             if pvars is None:
                 return None
             protoerr = 0
-            for key in pvars.keys():
-                protoerr += pvars[key]
+            for ikey in pvars.keys():
+                protoerr += pvars[ikey]
             return ax.Varbind(ax.VALUE_COUNTER32, oid, protoerr)
         return self.dynamicCallbackSkeleton(handler)
 
@@ -663,7 +663,7 @@ class DataSource(ntp.agentx.MIBControl):
         if oldMode is None:
             self.oldValues["mode"] = newMode
             return
-        elif oldMode != newMode:
+        if oldMode != newMode:
             self.oldValues["mode"] = newMode
             vl = [ax.Varbind(ax.VALUE_OID, snmpTrapOID,
                              ax.OID(ntpRootOID + (0, 1))),
