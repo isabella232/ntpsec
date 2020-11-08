@@ -61,6 +61,35 @@ def check_openssl_functions(ctx):
         ctx.fatal('missing critical functionality')
 
 
+def check_libssl_tls13(ctx):  # Does not catch non-OpenSSL implentation
+    """Check badly if TLS1.3 is supported."""
+    # (currently unused) intended to replace
+    # check_libssl_tls13 from OpenSSL wafhelper
+    _ = ver > ver_to_int(1, 1, 1, 0, 0)
+    t = verstr()
+    _ &= 'OpenSSL' in t
+    ctx.msg('Checking for OpenSSL with TLSv1.3 support',
+            ' '.join(t.split()[:2]))
+    if not _:
+        ctx.fatal('TLS library too old need 1.1.1b got %s' % verstr())
+    return _
+
+
+def check_openssl_bad_version(ctx):  # TODO: tighten bad version numbers
+    """Check if version is not 1.1.1b prerelease or any 1.1.1a."""
+    # (currently unused) intended to replace
+    # check_openssl_bad_version from OpenSSL wafhelper
+    if ver > ver_to_int(1, 1, 1, 2, 15):
+        _ = True
+    else:
+        _ = ver < ver_to_int(1, 1, 1, 0, 0)
+    ctx.msg('Checking for OpenSSL != 1.1.1a',
+            ('no', 'yes')[_])
+    if not _:
+        ctx.fatal('')
+    return _
+
+
 def configure(ctx):
     """Pull in modules checks."""
     check_openssl_functions(ctx)
