@@ -597,6 +597,7 @@ int main(int argc, char **argv) {
         check_sizeof(ctx, header, sizeof)
 
     if not ctx.options.disable_nts:
+        ctx.load('tlscheck', tooldir='wafhelpers/')
         # Check via pkg-config first, then fall back to a direct search
         if not ctx.check_cfg(
             package='libssl', uselib_store='SSL',

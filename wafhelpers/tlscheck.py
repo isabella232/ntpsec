@@ -40,6 +40,32 @@ def verstr():
     return polystr(tls.OpenSSL_version(0))
 
 
+def check_openssl_functions(ctx):
+    """Check if several functions are in TLS library."""
+    # (currently unused) intended to check for
+    # OpenSSL functions not just the version
+    funclist = [  # could be made long/short-er
+        'SSL_CTX_set_alpn_protos',
+        'SSL_CTX_set_alpn_select_cb',
+        'SSL_export_keying_material',
+        'SSL_get0_alpn_selected',
+    ]
+    output = True
+    step = None
+    for func in funclist:
+        step = hasattr(tls, func)
+        ctx.msg('Checking ssl for %s' % func,
+                ('no', 'yes')[step])
+        output &= step
+    if not output:
+        ctx.fatal('missing critical functionality')
+
+
+def configure(ctx):
+    """Pull in modules checks."""
+    check_openssl_functions(ctx)
+
+
 if __name__ == '__main__':
     if vers[0] > 2:  # If notionally OpenSSL 3
         sys.exit(0)
