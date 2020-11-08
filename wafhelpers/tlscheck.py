@@ -92,6 +92,8 @@ def check_openssl_bad_version(ctx):  # TODO: tighten bad version numbers
 
 def configure(ctx):
     """Pull in modules checks."""
+    check_libssl_tls13(ctx)
+    check_openssl_bad_version(ctx)
     check_openssl_functions(ctx)
 
 
