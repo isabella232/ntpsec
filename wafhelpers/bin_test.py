@@ -54,8 +54,8 @@ def bin_test_summary(_):
         waflib.Logs.pprint(i[0], i[1])
 
 
-def run(cmd, reg, pythonic, apath=None, environ=None):
-    """Run an individual non-python test."""
+def run(cmd, expected, pythonic, apath=None, environ=None):
+    """Run an individual test."""
     check = False
     odir = apath if apath else waflib.Context.out_dir
 
@@ -79,14 +79,14 @@ def run(cmd, reg, pythonic, apath=None, environ=None):
 
     stdout, stderr = p.communicate()
 
-    if reg in (stdout, stderr):
+    if expected in (stdout, stderr):
         check = True
 
     if check:
         addLog("GREEN", prefix + "  OK")
         return True
     addLog("RED", prefix + "  FAILED")
-    addLog("PINK", "Expected: " + reg)
+    addLog("PINK", "Expected: " + expected)
     if stdout:
         addLog("PINK", "Got (stdout): " + stdout)
     if stderr:
@@ -99,6 +99,7 @@ def cmd_bin_test(ctx):
     fails = 0
     skips = 0
     env = {}
+    python_wrap = True
 
     destdir = os.path.abspath(os.environ.get('DESTDIR', '/'))
     path = spath = None
@@ -111,6 +112,7 @@ def cmd_bin_test(ctx):
         path = destdir + os.sep if destdir != '/' else '/'
         spath = path + ctx.env.SBINDIR[1:] + os.sep
         path = path + ctx.env.BINDIR[1:] + os.sep
+        python_wrap = False
         addLog('BLUE', 'Following relative to: %s' % spath)
 
     if ctx.env['PYTHON_ARGPARSE']:
@@ -133,7 +135,7 @@ def cmd_bin_test(ctx):
         skips = skips + 1 if status is None else skips
 
     for cmd in sorted(cmd_map_python):
-        status = run(cmd, cmd_map_python[cmd], True, path, env)
+        status = run(cmd, cmd_map_python[cmd], python_wrap, path, env)
         fails = fails + 1 if status is False else fails
         skips = skips + 1 if status is None else skips
 
