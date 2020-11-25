@@ -104,8 +104,10 @@ def cmd_bin_test(ctx):
     path = spath = None
 
     if ctx.cmd == 'install':
-        pypath = destdir + ctx.env.PYTHONARCHDIR  # + os.sep + 'ntp'
-        env = {'PYTHONPATH': pypath} if destdir != '/' else {}
+        pypath = destdir + ctx.env.PYTHONARCHDIR
+        libpath = destdir + ctx.env.LIBDIR
+        env = {'PYTHONPATH': pypath,
+               'CTYPESDIR': libpath }
         path = destdir + os.sep if destdir != '/' else '/'
         spath = path + ctx.env.SBINDIR[1:] + os.sep
         path = path + ctx.env.BINDIR[1:] + os.sep

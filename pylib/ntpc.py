@@ -11,29 +11,38 @@ import sys
 import ntp.poly
 
 LIB = 'ntpc'
+CTD = 'CTYPESDIR'
 
 
-def _fmt():
+def _libname():
     """Produce library naming scheme."""
-    if sys.platform.startswith('darwin'):
-        return 'lib%s.dylib'
-    if sys.platform.startswith('win32'):
-        return '%s.dll'
-    if sys.platform.startswith('cygwin'):
-        return 'lib%s.dll'
-    return 'lib%s.so'
+    _format = 'lib%s.so'
+    _templates = {
+        'darwin': 'lib%s.dylib',
+        'win32': '%s.dll',
+        'cygwin': 'lib%s.dll'
+        }
+    for key in _templates:
+        if sys.platform.startswith(key):
+            _format = _templates[key]
+            break
+    return _format % LIB
 
 
 def _importado():
     """Load the ntpc library or throw an OSError trying."""
     ntpc_paths = []         # places to look
 
-    j = __file__.split(os.sep)[:-1]
-    ntpc_paths.append(os.sep.join(j + [_fmt() % LIB]))
+    if CTD in os.environ:  # and not sys.platform.startswith('linux'):
+        ntpc_paths.append(os.environ[CTD] +
+                          os.sep + _libname())
+    else:
+        j = __file__.split(os.sep)[:-1]
+        ntpc_paths.append(os.sep.join(j + [_libname()]))
 
-    ntpc_path = ctypes.util.find_library(LIB)
-    if ntpc_path:
-        ntpc_paths.append(ntpc_path)
+        ntpc_path = ctypes.util.find_library(LIB)
+        if ntpc_path:
+            ntpc_paths.append(ntpc_path)
 
     return _dlo(ntpc_paths)
 
