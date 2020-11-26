@@ -5,12 +5,12 @@ import os.path
 import sys
 import waflib.Context
 import waflib.Logs
-import waflib.Utils
+import subprocess
 sys.path.insert(0, "%s/main/tests/pylib" % waflib.Context.out_dir)
 import ntp.util
 
 version = ntp.util.stdversion()
-Popen = waflib.Utils.subprocess.Popen
+Popen = subprocess.Popen
 
 cmd_smap = {
     ("main/ntpd/ntpd", "--version"): "ntpd %s\n" % version,
@@ -73,9 +73,9 @@ def run(cmd, expected, pythonic, apath=None, environ=None):
 
     p = Popen(cmd, universal_newlines=True,
               env=environ, cwd=odir,
-              stdin=waflib.Utils.subprocess.PIPE,
-              stdout=waflib.Utils.subprocess.PIPE,
-              stderr=waflib.Utils.subprocess.PIPE)
+              stdin=subprocess.PIPE,
+              stdout=subprocess.PIPE,
+              stderr=subprocess.PIPE)
 
     stdout, stderr = p.communicate()
 
