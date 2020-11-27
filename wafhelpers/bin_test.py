@@ -58,7 +58,7 @@ def run(cmd, expected, pythonic, apath=None, environ=None):
     """Run an individual test."""
     odir = apath if apath else waflib.Context.out_dir
 
-    environ = environ is isinstance(environ, dict) else {}
+    environ = environ if isinstance(environ, dict) else {}
     if apath:
         cmd = [os.sep.join(['.'] + cmd[0].split(os.sep)[-1:])] + list(cmd[1:])
     prefix = "running: " + " ".join(cmd)
@@ -107,7 +107,7 @@ def cmd_bin_test(ctx):
         libpath = destdir + ctx.env.LIBDIR
         python_wrap = False
         if destdir != '/':
-            path = destdir + os.sep if destdir != '/'
+            path = destdir + os.sep
             spath = path + ctx.env.SBINDIR[1:] + os.sep
             path = path + ctx.env.BINDIR[1:] + os.sep
             env = {'PYTHONPATH': pypath,
