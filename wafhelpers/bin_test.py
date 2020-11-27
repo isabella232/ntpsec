@@ -58,7 +58,7 @@ def run(cmd, expected, pythonic, apath=None, environ=None):
     """Run an individual test."""
     odir = apath if apath else waflib.Context.out_dir
 
-    environ = {} if environ is None else environ
+    environ = environ is isinstance(environ, dict) else {}
     if apath:
         cmd = [os.sep.join(['.'] + cmd[0].split(os.sep)[-1:])] + list(cmd[1:])
     prefix = "running: " + " ".join(cmd)
@@ -102,15 +102,17 @@ def cmd_bin_test(ctx):
     path = spath = None
 
     if ctx.cmd == 'install':
+        path, spath, env = None, None, None
         pypath = destdir + ctx.env.PYTHONARCHDIR
         libpath = destdir + ctx.env.LIBDIR
-        env = {'PYTHONPATH': pypath,
-               'CTYPESDIR': libpath } if destdir != '/' else None
-        path = destdir + os.sep if destdir != '/' else '/'
-        spath = path + ctx.env.SBINDIR[1:] + os.sep
-        path = path + ctx.env.BINDIR[1:] + os.sep
         python_wrap = False
-        addLog('BLUE', 'Following relative to: %s' % spath)
+        if destdir != '/':
+            path = destdir + os.sep if destdir != '/'
+            spath = path + ctx.env.SBINDIR[1:] + os.sep
+            path = path + ctx.env.BINDIR[1:] + os.sep
+            env = {'PYTHONPATH': pypath,
+                'CTYPESDIR': libpath }
+            addLog('BLUE', 'Following relative to: %s' % spath)
 
     if ctx.env['PYTHON_ARGPARSE']:
         cmd_map_python.update(cmd_map_python_argparse)
@@ -123,7 +125,7 @@ def cmd_bin_test(ctx):
         fails = fails + 1 if status is False else fails
         skips = skips + 1 if status is None else skips
 
-    if ctx.cmd == 'install':
+    if ctx.cmd == 'install' and destdir != '/':
         addLog('BLUE', 'Following relative to: %s' % path)
 
     for cmd in sorted(cmd_map):
