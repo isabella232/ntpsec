@@ -108,7 +108,7 @@ def cmd_bin_test(ctx):
         pypath = destdir + ctx.env.PYTHONARCHDIR
         libpath = destdir + ctx.env.LIBDIR
         env = {'PYTHONPATH': pypath,
-               'CTYPESDIR': libpath }
+               'CTYPESDIR': libpath } if destdir != '/' else None
         path = destdir + os.sep if destdir != '/' else '/'
         spath = path + ctx.env.SBINDIR[1:] + os.sep
         path = path + ctx.env.BINDIR[1:] + os.sep
