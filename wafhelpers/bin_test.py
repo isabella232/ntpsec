@@ -56,7 +56,6 @@ def bin_test_summary(_):
 
 def run(cmd, expected, pythonic, apath=None, environ=None):
     """Run an individual test."""
-    check = False
     odir = apath if apath else waflib.Context.out_dir
 
     environ = {} if environ is None else environ
@@ -80,11 +79,9 @@ def run(cmd, expected, pythonic, apath=None, environ=None):
     stdout, stderr = p.communicate()
 
     if expected in (stdout, stderr):
-        check = True
-
-    if check:
         addLog("GREEN", prefix + "  OK")
         return True
+
     addLog("RED", prefix + "  FAILED")
     addLog("PINK", "Expected: " + expected)
     if stdout:
