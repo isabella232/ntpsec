@@ -1175,6 +1175,16 @@ function: obtain and print a list of the server's peers [IP version]
 usage: peers
 """)
 
+    def do_rpeers(self, line):
+        "obtain and print a list of the server's peers (dextral)"
+        self.__dopeers(showall=True, mode="rpeers")
+
+    def help_rpeers(self):
+        self.say("""\
+function: obtain and print a list of the server's peers (dextral)
+usage: rpeers
+""")
+
     def do_apeers(self, line):
         """
 obtain and print a list of the server's peers and their assocIDs [IP version]
