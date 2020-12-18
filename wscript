@@ -599,6 +599,7 @@ int main(int argc, char **argv) {
         check_sizeof(ctx, header, sizeof)
 
     if not ctx.options.disable_nts:
+        ctx.load('openssl', tooldir='wafhelpers/')
         # Check via pkg-config first, then fall back to a direct search
         if not ctx.check_cfg(
             package='libssl', uselib_store='SSL',
@@ -841,12 +842,6 @@ int main(int argc, char **argv) {
             if timesize < 8:
                 msg("WARNING: This system has a 32-bit time_t.")
                 msg("WARNING: Your ntpd will fail on 2038-01-19T03:14:07Z.")
-
-    if not ctx.env.DISABLE_NTS:
-        from wafhelpers.openssl import check_libssl_tls13
-        from wafhelpers.openssl import check_openssl_bad_version
-        check_libssl_tls13(ctx)
-        check_openssl_bad_version(ctx)
 
     # before write_config()
     if ctx.is_defined("HAVE_LINUX_CAPABILITY"):

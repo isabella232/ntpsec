@@ -18,12 +18,26 @@ then
   set -o pipefail
 fi
 
+DISABLE_NTS=""
+if pkg-config --version 2>/dev/null 1>/dev/null
+then
+  if ! pkg-config openssl --atleast-version=1.1.1
+  then
+    DISABLE_NTS="--disable-nts"
+  fi
+else
+  if ! $PYTHON ../wafhelpers/openssl.py
+  then
+    DISABLE_NTS="--disable-nts"
+  fi
+fi
+
 doit ()
 {
   DIR=test-$1
   [ ! -d $DIR ] && mkdir $DIR
   rm -rf $DIR/*
-  python2 ./waf configure --out=$DIR $2 2>&1 | tee    $DIR/test.log
+  python2 ./waf configure $DISABLE_NTS --out=$DIR $2 2>&1 | tee    $DIR/test.log
   WAF1=$?
   WAF2=0
   WAF3=0
