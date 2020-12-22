@@ -203,50 +203,6 @@ ubuntu-devel-refclocks:
   script:
     - python3 ./waf configure --disable-doc --disable-manpage --refclock=all build
 
-freebsd-11-basic:
-  <<: *job_definition
-  script:
-    - python ./waf configure --disable-doc --disable-manpage --disable-nts build
-    - DESTDIR=build/prison python ./waf install
-    - DESTDIR=./prison python ./waf install
-    - DESTDIR=../prison python ./waf install
-    - rm -rvf build/prison ./prison ../prison
-  tags:
-    - freebsd-11
-  rules:
-    - if: '$CI_COMMIT_BRANCH && $CI_PROJECT_PATH == "NTPsec/ntpsec"'
-
-freebsd-11-refclocks:
-  <<: *job_definition
-  script:
-    - python ./waf configure --disable-doc --disable-manpage --disable-nts --refclock=all build
-  tags:
-    - freebsd-11
-  rules:
-    - if: '$CI_COMMIT_BRANCH && $CI_PROJECT_PATH == "NTPsec/ntpsec"'
-
-freebsd-12-basic:
-  <<: *job_definition
-  script:
-    - python ./waf configure --disable-doc --disable-manpage build
-    - DESTDIR=build/prison python ./waf install
-    - DESTDIR=./prison python ./waf install
-    - DESTDIR=../prison python ./waf install
-    - rm -rvf build/prison ./prison ../prison
-  tags:
-    - freebsd-12
-  rules:
-    - if: '$CI_COMMIT_BRANCH && $CI_PROJECT_PATH == "NTPsec/ntpsec"'
-
-freebsd-12-refclocks:
-  <<: *job_definition
-  script:
-    - python ./waf configure --disable-doc --disable-manpage --refclock=all build
-  tags:
-    - freebsd-12
-  rules:
-    - if: '$CI_COMMIT_BRANCH && $CI_PROJECT_PATH == "NTPsec/ntpsec"'
-
 centos-latest-basic:
   <<: *job_definition
   image: $CI_REGISTRY/ntpsec/ntpsec/centos-latest
@@ -374,15 +330,6 @@ debian-stable-mDNS-refclocks:
   image: $CI_REGISTRY/ntpsec/ntpsec/debian-stable-mdns
   script:
     - python ./waf configure --disable-doc --disable-manpage --refclock=all build
-
-cross-build:
-  <<: *job_definition_allow_failure
-  script:
-    - PYTHON_VERSION=2.7 PYTAG=cpython27 pyext_PATTERN="%s.so" PYTHON_LDFLAGS='-lpthread -ldl' ./waf configure --disable-doc --disable-manpage --disable-nts --cross-compiler=arm-linux-gnueabihf-gcc-5 --cross-cflags '-I/srv/arm-local/include -I/srv/arm-local/include/python2.7' --cross-ldflags '-L/srv/arm-local/lib' --pythondir=/srv/arm-local/lib/python2.7/dist-packages --pythonarchdir=/srv/arm-local/lib/python2.7/dist-packages build
-  tags:
-    - ubuntu-1604-lts
-  rules:
-    - if: '$CI_COMMIT_BRANCH && $CI_PROJECT_PATH == "NTPsec/ntpsec"'
 
 gentoo-basic:
   <<: *job_definition
