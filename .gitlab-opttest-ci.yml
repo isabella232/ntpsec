@@ -38,6 +38,8 @@ fedora-rawhide-options-tester:
   script:
     - yum -y install bison gcc openssl-devel libcap-devel pps-tools-devel python3-devel python2-devel libseccomp-devel bash
   <<: *option_tester
+  rules:
+    - if: '$CI_PIPELINE_SOURCE != "schedule"'
 
 opensuse-leap-options-tester:
   <<: *option_tester

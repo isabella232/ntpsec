@@ -2,7 +2,7 @@
   variables:
     # Try to save some time by only grabbing the most recent commit
     GIT_DEPTH: '1'
-  stage: build
+  stage: .pre
   image: docker:stable
   services:
     - docker:stable-dind
@@ -67,9 +67,17 @@ build-fedora-latest:
 
 build-fedora-rawhide:
   <<: *build_definition
+  allow_failure: false
+  retry: 0
+  rules:
+    - if: '$CI_PIPELINE_SOURCE != "schedule"'
 
 build-fedora-rawhide-gpsd:
   <<: *build_definition
+  allow_failure: false
+  retry: 0
+  rules:
+    - if: '$CI_PIPELINE_SOURCE != "schedule"'
 
 build-gentoo:
   <<: *build_definition
